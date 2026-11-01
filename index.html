@@ -1,1345 +1,759 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odoo Code Academy</title>
+<title>The Upgrade Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap">
 <style>
-:root {
-  --bg: #f8f9fa;
-  --bg-card: #ffffff;
-  --bg-sidebar: #1a1a2e;
-  --bg-code: #1e1e2e;
-  --text: #2d3436;
-  --text-light: #636e72;
-  --text-code: #cdd6f4;
-  --accent: #714baf;
-  --accent-light: #e8def8;
-  --accent-dark: #5a3d8a;
-  --success: #00b894;
-  --success-light: #d4f5ed;
-  --error: #d63031;
-  --error-light: #fde8e8;
-  --warning: #fdcb6e;
-  --border: #dfe6e9;
-  --sidebar-text: #b2bec3;
-  --sidebar-active: #ffffff;
-  --radius: 8px;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
+:root{
+  --ground:#f6f7fa;
+  --surface:#ffffff;
+  --surface-2:#eceff6;
+  --ink:#14161d;
+  --ink-2:#495062;
+  --ink-3:#737b8f;
+  --rule:#dfe3ec;
+  --rule-2:#eaedf4;
+  --accent:#2a3fa8;
+  --accent-soft:#e6eaf8;
+  --add:#15713c;
+  --add-soft:#e3f3e9;
+  --rem:#a8231c;
+  --rem-soft:#fae9e7;
+  --code-bg:#eff1f8;
+  --code-ink:#1d2333;
+  --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-#app { display: flex; min-height: 100vh; }
-#sidebar { width: 280px; min-width: 280px; background: var(--bg-sidebar); color: var(--sidebar-text); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.3s ease; overflow-y: auto; }
-#sidebar.collapsed { transform: translateX(-280px); }
-.sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-.sidebar-header h1 { font-size: 20px; color: #fff; font-weight: 700; }
-.subtitle { font-size: 12px; color: var(--sidebar-text); margin-top: 2px; }
-.progress-bar-container { background: rgba(255,255,255,0.1); border-radius: 4px; height: 6px; margin-top: 16px; overflow: hidden; }
-.progress-bar { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width 0.5s ease; }
-.progress-text { font-size: 11px; margin-top: 4px; display: block; }
-.module-list { padding: 12px 0; flex: 1; }
-.module-group { margin-bottom: 4px; }
-.module-header { display: flex; align-items: center; gap: 8px; padding: 10px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--sidebar-text); transition: color 0.2s; user-select: none; }
-.module-header:hover { color: #fff; }
-.module-header .arrow { font-size: 10px; transition: transform 0.2s; flex-shrink: 0; }
-.module-header.expanded .arrow { transform: rotate(90deg); }
-.module-header .mod-icon { flex-shrink: 0; }
-.module-header .mod-progress { margin-left: auto; font-size: 11px; font-weight: 400; opacity: 0.7; }
-.lesson-list { display: none; padding: 2px 0 8px; }
-.lesson-list.open { display: block; }
-.lesson-item { display: flex; align-items: center; gap: 8px; padding: 6px 20px 6px 40px; font-size: 13px; cursor: pointer; color: var(--sidebar-text); transition: all 0.2s; border-left: 2px solid transparent; }
-.lesson-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.lesson-item.active { color: #fff; background: rgba(113,75,175,0.2); border-left-color: var(--accent); }
-.lesson-item.completed .check { color: var(--success); }
-.lesson-item .check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--sidebar-text); font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.lesson-item.completed .check { border-color: var(--success); background: var(--success); color: #fff; }
-.sidebar-toggle { position: fixed; top: 12px; left: 12px; z-index: 101; background: var(--bg-sidebar); color: #fff; border: none; border-radius: 6px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: var(--shadow); }
-main { flex: 1; margin-left: 280px; min-width: 0; }
-.view { display: none; padding: 40px; max-width: 860px; margin: 0 auto; }
-.view.active { display: block; }
-.hero { text-align: center; padding: 60px 20px; }
-.hero h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
-.hero p { font-size: 17px; color: var(--text-light); max-width: 520px; margin: 0 auto 32px; }
-.hero-stats { display: flex; justify-content: center; gap: 48px; margin-bottom: 32px; }
-.stat { text-align: center; }
-.stat-num { display: block; font-size: 28px; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 13px; color: var(--text-light); }
-.roadmap { margin-top: 20px; }
-.roadmap h3 { font-size: 20px; margin-bottom: 20px; }
-.roadmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.roadmap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: all 0.2s; }
-.roadmap-card:hover { box-shadow: var(--shadow); border-color: var(--accent); }
-.roadmap-card .mod-num { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
-.roadmap-card h4 { font-size: 15px; margin: 6px 0 8px; font-weight: 600; }
-.roadmap-card p { font-size: 13px; color: var(--text-light); line-height: 1.5; }
-.roadmap-card .card-progress { margin-top: 12px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.roadmap-card .card-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s; }
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-dark); }
-.btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-.btn-ghost { background: none; color: var(--text-light); padding: 8px 12px; }
-.btn-ghost:hover { color: var(--accent); }
-.lesson-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-.lesson-breadcrumb { font-size: 13px; color: var(--text-light); }
-.lesson-body h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-.lesson-body h3 { font-size: 19px; font-weight: 600; margin: 32px 0 12px; padding-top: 8px; }
-.lesson-body h4 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
-.lesson-body p { margin-bottom: 14px; font-size: 15px; line-height: 1.7; }
-.lesson-body ul, .lesson-body ol { margin: 0 0 14px 24px; font-size: 15px; line-height: 1.7; }
-.lesson-body li { margin-bottom: 4px; }
-.code-block { background: var(--bg-code); border-radius: var(--radius); margin: 16px 0; overflow: hidden; }
-.code-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: rgba(0,0,0,0.2); font-size: 12px; color: #888; }
-.code-header .lang { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.code-content { padding: 16px; overflow-x: auto; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13.5px; line-height: 1.65; color: var(--text-code); }
-.code-content .line { display: block; min-height: 1.65em; }
-.code-content .line-num { display: inline-block; width: 32px; color: #555; text-align: right; margin-right: 16px; user-select: none; }
-.kw { color: #cba6f7; } .str { color: #a6e3a1; } .num { color: #fab387; } .cm { color: #6c7086; font-style: italic; } .fn { color: #89b4fa; } .dec { color: #f9e2af; } .cls { color: #89dceb; } .op { color: #94e2d5; } .tag { color: #cba6f7; } .attr { color: #89b4fa; } .val { color: #a6e3a1; } .xml-cm { color: #6c7086; font-style: italic; }
-.code-annotation { background: rgba(113,75,175,0.1); border-left: 3px solid var(--accent); padding: 10px 14px; margin: 12px 0; border-radius: 0 var(--radius) var(--radius) 0; font-size: 13.5px; line-height: 1.6; }
-.code-annotation strong { color: var(--accent); }
-.lesson-body code { background: rgba(113,75,175,0.1); color: var(--accent-dark); padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.9em; }
-.callout { border-radius: var(--radius); padding: 16px 20px; margin: 20px 0; font-size: 14px; line-height: 1.6; }
-.callout-title { font-weight: 700; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
-.callout-tip { background: #e8f8f5; border-left: 4px solid var(--success); }
-.callout-tip .callout-title { color: var(--success); }
-.callout-warning { background: #fef9e7; border-left: 4px solid #f39c12; }
-.callout-warning .callout-title { color: #e67e22; }
-.callout-info { background: var(--accent-light); border-left: 4px solid var(--accent); }
-.callout-info .callout-title { color: var(--accent); }
-.callout-support { background: #e3f2fd; border-left: 4px solid #2196f3; }
-.callout-support .callout-title { color: #1565c0; }
-.compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-.compare-table th { background: var(--bg); padding: 10px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
-.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.compare-table tr:hover td { background: rgba(113,75,175,0.03); }
-.quiz-section { background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 32px 0; }
-.quiz-section h3 { margin: 0 0 16px; padding: 0; font-size: 17px; color: var(--accent); }
-.quiz-question { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-.quiz-question:last-of-type { border-bottom: none; margin-bottom: 12px; padding-bottom: 0; }
-.quiz-question p { font-weight: 600; margin-bottom: 10px; }
-.quiz-options { list-style: none; margin: 0; padding: 0; }
-.quiz-options li { padding: 10px 14px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-.quiz-options li:hover { border-color: var(--accent); background: var(--accent-light); }
-.quiz-options li.correct { border-color: var(--success); background: var(--success-light); }
-.quiz-options li.wrong { border-color: var(--error); background: var(--error-light); }
-.quiz-options li.disabled { pointer-events: none; }
-.quiz-explanation { display: none; margin-top: 10px; padding: 10px 14px; background: var(--bg); border-radius: 6px; font-size: 13px; line-height: 1.5; }
-.quiz-explanation.visible { display: block; }
-.complete-section { text-align: center; padding: 32px 0 16px; border-top: 1px solid var(--border); margin-top: 32px; }
-.btn-complete { background: var(--success); color: #fff; padding: 12px 32px; font-size: 15px; }
-.btn-complete:hover { background: #00a884; }
-.btn-complete.done { background: var(--bg); color: var(--success); border: 2px solid var(--success); cursor: default; }
-.lesson-footer { display: flex; justify-content: space-between; padding-top: 24px; margin-top: 16px; }
-.toggle-block { border: 1px solid var(--border); border-radius: var(--radius); margin: 16px 0; overflow: hidden; }
-.toggle-header { padding: 12px 16px; background: var(--bg); cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; user-select: none; }
-.toggle-header:hover { background: var(--accent-light); }
-.toggle-header .arrow { transition: transform 0.2s; font-size: 11px; }
-.toggle-header.open .arrow { transform: rotate(90deg); }
-.toggle-content { display: none; padding: 16px; border-top: 1px solid var(--border); }
-.toggle-content.open { display: block; }
-@media (max-width: 900px) {
-  #sidebar { transform: translateX(-280px); }
-  #sidebar.open { transform: translateX(0); }
-  .sidebar-toggle { display: flex; }
-  main { margin-left: 0; }
-  .view { padding: 24px 16px; }
-  .hero { padding: 40px 12px; }
-  .hero h2 { font-size: 24px; }
-  .hero-stats { gap: 24px; }
-  .roadmap-grid { grid-template-columns: 1fr; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1116;
+    --surface:#171a22;
+    --surface-2:#1e222c;
+    --ink:#e7e9f0;
+    --ink-2:#a4acbe;
+    --ink-3:#7d8599;
+    --rule:#262b36;
+    --rule-2:#1f2430;
+    --accent:#9aaaff;
+    --accent-soft:#1b2140;
+    --add:#4fcb82;
+    --add-soft:#13261b;
+    --rem:#ff9184;
+    --rem-soft:#2a1715;
+    --code-bg:#12151c;
+    --code-ink:#dfe3ee;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1116;
+  --surface:#171a22;
+  --surface-2:#1e222c;
+  --ink:#e7e9f0;
+  --ink-2:#a4acbe;
+  --ink-3:#7d8599;
+  --rule:#262b36;
+  --rule-2:#1f2430;
+  --accent:#9aaaff;
+  --accent-soft:#1b2140;
+  --add:#4fcb82;
+  --add-soft:#13261b;
+  --rem:#ff9184;
+  --rem-soft:#2a1715;
+  --code-bg:#12151c;
+  --code-ink:#dfe3ee;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 96px}
+.prose{max-width:68ch}
+
+/* ---------- masthead ---------- */
+.masthead{border-bottom:1px solid var(--rule);background:var(--surface)}
+.masthead .wrap{padding-top:44px;padding-bottom:32px}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+}
+h1{
+  font-family:var(--sans);font-weight:700;font-size:clamp(34px,5.6vw,52px);
+  line-height:1.04;letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;
+}
+.standfirst{
+  font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink-2);
+  margin:18px 0 0;max-width:60ch;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:0 36px;margin-top:28px;
+  padding-top:22px;border-top:1px solid var(--rule-2);
+}
+.meta div{display:flex;flex-direction:column;gap:3px}
+.meta dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.meta dd{margin:0;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:20;background:var(--ground);
+  border-bottom:1px solid var(--rule);
+}
+nav .wrap{
+  padding:0 24px;display:flex;align-items:center;gap:4px;
+  overflow-x:auto;scrollbar-width:thin;
+}
+nav a{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-2);text-decoration:none;padding:13px 11px;white-space:nowrap;
+  border-bottom:2px solid transparent;
+}
+nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+nav .count{
+  margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  padding-left:20px;white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+nav .count b{color:var(--accent);font-weight:600}
+
+/* ---------- the rule ---------- */
+.rulebox{
+  margin:40px 0 8px;padding:26px 28px;background:var(--accent-soft);
+  border-left:3px solid var(--accent);
+}
+.rulebox p{margin:0;max-width:64ch}
+.rulebox p + p{margin-top:12px}
+.rulebox strong{font-weight:600}
+.rulebox .lede{font-family:var(--serif);font-size:18.5px;line-height:1.5}
+
+/* ---------- tracks ---------- */
+.track{padding:56px 0 8px;border-top:1px solid var(--rule);margin-top:48px}
+.track:first-of-type{border-top:none}
+.track-head{display:flex;flex-direction:column;gap:10px}
+h2{
+  font-size:clamp(25px,3.4vw,33px);font-weight:700;letter-spacing:-.015em;
+  line-height:1.12;margin:0;text-wrap:balance;
+}
+.why{font-family:var(--serif);font-size:18px;line-height:1.55;color:var(--ink-2);margin:4px 0 0;max-width:62ch}
+h3{
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin:38px 0 14px;
+  padding-bottom:8px;border-bottom:1px solid var(--rule-2);
+}
+h4{font-size:16px;font-weight:600;margin:24px 0 6px;letter-spacing:-.005em}
+p{margin:0 0 14px}
+.track ul,.track ol{margin:0 0 14px;padding-left:22px}
+.track li{margin-bottom:7px;max-width:68ch}
+code{
+  font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+  color:var(--code-ink);padding:1.5px 5px;border-radius:3px;
+}
+pre{
+  font-family:var(--mono);font-size:13px;line-height:1.62;background:var(--code-bg);
+  color:var(--code-ink);padding:18px 20px;margin:0 0 18px;overflow-x:auto;
+  border-left:2px solid var(--rule);
+}
+pre code{background:none;padding:0;font-size:inherit}
+.cap{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin:-10px 0 20px;letter-spacing:.02em}
+
+/* links list */
+.links{display:flex;flex-direction:column;gap:0;margin-bottom:8px}
+.links a{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;
+  padding:11px 2px;border-bottom:1px solid var(--rule-2);
+  color:var(--ink);text-decoration:none;
+}
+.links a:hover{color:var(--accent)}
+.links a:hover .lk{text-decoration:underline}
+.lk{font-weight:500;font-size:15px}
+.links .note{font-size:13.5px;color:var(--ink-3)}
+.links a:hover .note{color:var(--ink-3)}
+
+/* breaks list */
+.breaks{list-style:none;padding:0;margin:0 0 18px;counter-reset:b}
+.breaks li{
+  counter-increment:b;position:relative;padding-left:34px;margin-bottom:10px;max-width:66ch;
+}
+.breaks li::before{
+  content:counter(b);position:absolute;left:0;top:1px;
+  width:22px;height:22px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  background:var(--rem-soft);color:var(--rem);border-radius:50%;
+}
+
+/* ---------- tasks ---------- */
+.tasks{list-style:none;padding:0;margin:0}
+.tasks li{
+  display:grid;grid-template-columns:auto 1fr;gap:0 14px;
+  padding:15px 0;border-bottom:1px solid var(--rule-2);margin:0;max-width:none;
+}
+.tasks label{display:contents;cursor:pointer}
+.tasks input{
+  appearance:none;-webkit-appearance:none;margin:3px 0 0;
+  width:17px;height:17px;border:1.5px solid var(--ink-3);border-radius:3px;
+  background:var(--surface);cursor:pointer;flex:none;position:relative;
+}
+.tasks input:checked{background:var(--add);border-color:var(--add)}
+.tasks input:checked::after{
+  content:"";position:absolute;left:4.5px;top:1px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
+.tasks input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tasks .body{max-width:68ch}
+.tasks .body > :last-child{margin-bottom:0}
+.tasks input:checked ~ .body{color:var(--ink-3)}
+.tasks input:checked ~ .body strong{color:var(--ink-3)}
+.tasks .body strong{font-weight:600;color:var(--ink)}
+.tasks .body pre{margin-top:10px;margin-bottom:0}
+
+/* ---------- table ---------- */
+.tablewrap{overflow-x:auto;margin:0 0 22px;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;background:var(--surface)}
+th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);
+  border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.wk{font-family:var(--mono);font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+td.hrs{font-family:var(--mono);white-space:nowrap;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tag{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;
+  background:var(--accent-soft);color:var(--accent);margin-right:7px;
+}
+
+/* ---------- deliverables ---------- */
+.deliv{list-style:none;padding:0;margin:0 0 26px;counter-reset:d}
+.deliv li{
+  counter-increment:d;position:relative;padding:14px 0 14px 40px;
+  border-bottom:1px solid var(--rule-2);max-width:72ch;
+}
+.deliv li::before{
+  content:counter(d,decimal-leading-zero);position:absolute;left:0;top:15px;
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);
+}
+.deliv strong{font-weight:600}
+.deliv span{display:block;color:var(--ink-2);font-size:14.5px;margin-top:2px}
+
+.pull{
+  margin:30px 0;padding:24px 26px;background:var(--surface);
+  border:1px solid var(--rule);
+}
+.pull p{font-family:var(--serif);font-size:18px;line-height:1.55;margin:0;max-width:60ch}
+.pull .who{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:14px}
+
+footer{margin-top:64px;padding-top:26px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:13.5px}
+footer code{font-size:12.5px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:620px){
+  .meta{gap:0 24px}
+  .wrap{padding:0 18px 72px}
+  pre{font-size:12px;padding:14px 15px}
 }
 </style>
 </head>
 <body>
-<div id="app">
-  <nav id="sidebar">
-    <div class="sidebar-header">
-      <h1>Odoo Academy</h1>
-      <p class="subtitle">Read Odoo Code Like a Pro</p>
-      <div class="progress-bar-container"><div class="progress-bar" id="globalProgress"></div></div>
-      <span class="progress-text" id="globalProgressText">0% complete</span>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Four-month technical plan · Nov 2026 – Feb 2027</p>
+    <h1>The Upgrade Track</h1>
+    <p class="standfirst">Everything else is off the table. No product flow, no accounting, no localisation. Six tracks that all feed one destination: the person who can read what changed between two versions of Odoo and survive the migration.</p>
+    <dl class="meta">
+      <div><dt>Target profile</dt><dd>Odoo Technical Consultant</dd></div>
+      <div><dt>Speciality</dt><dd>Migrations &amp; customisation</dd></div>
+      <div><dt>Budget</dt><dd>8–10 h / week</dd></div>
+      <div><dt>Portability</dt><dd>No country, no language</dd></div>
+    </dl>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <a href="#github">GitHub &amp; CI</a>
+    <a href="#python">Python</a>
+    <a href="#xml">XML</a>
+    <a href="#sql">SQL</a>
+    <a href="#studio">Studio</a>
+    <a href="#upgrade">Upgrade</a>
+    <a href="#weeks">16 weeks</a>
+    <a href="#end">Deliverables</a>
+    <span class="count"><b id="done">0</b> / <span id="total">0</span> tasks</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="rulebox">
+    <p class="lede"><strong>One rule outranks this entire page:</strong> getting the escalations routed to you matters more than the studying.</p>
+    <p>In week one, tell your manager that Upgrade is your speciality and ask to be sent the tickets. Real broken databases will teach you in a week what reading teaches you in a month. Everything below is what you do <em>between</em> tickets — it is support for the real learning, not a substitute for it.</p>
+  </div>
+
+  <!-- ============ GITHUB ============ -->
+  <section class="track" id="github">
+    <div class="track-head">
+      <p class="eyebrow">Track A · do this first</p>
+      <h2>GitHub &amp; CI</h2>
+      <p class="why">Every Odoo fix is a public commit. Once you can read a pull request you can answer “is this fixed in my client's version?” yourself instead of guessing — and reading diffs between versions <em>is</em> upgrade work. This track unblocks all the others, so it goes first.</p>
     </div>
-    <div id="moduleList" class="module-list"></div>
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&#9776;</button>
-  </nav>
-  <main id="content">
-    <div id="homeView" class="view active">
-      <div class="hero">
-        <h2>Welcome to Odoo Code Academy</h2>
-        <p>A step-by-step course to help you <strong>read and understand Odoo source code</strong> — no programming experience needed. Built for support analysts.</p>
-        <div class="hero-stats">
-          <div class="stat"><span class="stat-num">7</span><span class="stat-label">Modules</span></div>
-          <div class="stat"><span class="stat-num">21</span><span class="stat-label">Lessons</span></div>
-          <div class="stat"><span class="stat-num">60+</span><span class="stat-label">Examples</span></div>
-        </div>
-        <button class="btn btn-primary" id="startBtn">Start Learning</button>
-        <button class="btn btn-secondary" id="continueBtn" style="display:none">Continue Where You Left Off</button>
-      </div>
-      <div class="roadmap"><h3>Your Learning Path</h3><div class="roadmap-grid" id="roadmapGrid"></div></div>
+
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://github.com/odoo/odoo"><span class="lk">github.com/odoo/odoo</span><span class="note">The real thing. Your primary reference from now on.</span></a>
+      <a href="https://docs.github.com/en/pull-requests"><span class="lk">GitHub — Pull requests</span><span class="note">Official explanation of what a PR actually is.</span></a>
+      <a href="https://www.odoo.com/documentation/19.0/contributing/development/git_guidelines.html"><span class="lk">Odoo — Git guidelines</span><span class="note">The commit message convention. Read this twice.</span></a>
+      <a href="https://runbot.odoo.com"><span class="lk">runbot.odoo.com</span><span class="note">Odoo's CI. Builds and tests every branch and PR.</span></a>
+      <a href="https://learngitbranching.js.org"><span class="lk">Learn Git Branching</span><span class="note">Interactive. Two evenings and branches stop being scary.</span></a>
+      <a href="https://git-scm.com/book/en/v2"><span class="lk">Pro Git (free book)</span><span class="note">Reference, not a read-through. Chapters 2, 3 and 7.</span></a>
     </div>
-    <div id="lessonView" class="view">
-      <div class="lesson-header">
-        <button class="btn btn-ghost" id="backBtn">&larr; Back</button>
-        <span class="lesson-breadcrumb" id="lessonBreadcrumb"></span>
-      </div>
-      <div class="lesson-body" id="lessonBody"></div>
-      <div class="lesson-footer">
-        <button class="btn btn-secondary" id="prevLessonBtn">&larr; Previous</button>
-        <button class="btn btn-primary" id="nextLessonBtn">Next &rarr;</button>
-      </div>
+
+    <h3>What you actually need to understand</h3>
+
+    <h4>The mental model, in four sentences</h4>
+    <p>A <strong>repository</strong> is a folder that remembers its whole history. A <strong>commit</strong> is one saved change, with a message and an author. A <strong>branch</strong> is a parallel line of history. A <strong>pull request</strong> is a proposal — “here are my commits, please merge them into your branch” — carrying a discussion, reviews, and automated checks, and it ends either merged or closed.</p>
+
+    <h4>Odoo's branches are versions. This is the key.</h4>
+    <ul>
+      <li><code>master</code> — the next unreleased version, where new development happens</li>
+      <li><code>19.0</code>, <code>18.0</code>, <code>17.0</code> — released versions that still receive fixes</li>
+      <li><code>saas-19.4</code> and similar — the intermediate releases used by Odoo Online</li>
+    </ul>
+    <p>So <strong>the branch a pull request targets tells you which version gets the fix.</strong> That one fact answers most of the questions you currently can't answer.</p>
+
+    <h4>Reading a PR page: four tabs</h4>
+    <ul>
+      <li><strong>Conversation</strong> — the description plus discussion. Read the first post and the last few comments.</li>
+      <li><strong>Commits</strong> — the individual changes that make up the proposal.</li>
+      <li><strong>Checks</strong> — the automated tests. Green tick passed, red cross failed, orange dot still running.</li>
+      <li><strong>Files changed</strong> — the diff, and where you will spend most of your time. Red lines with <code>-</code> were removed; green lines with <code>+</code> were added.</li>
+    </ul>
+
+    <h4>Commit tags make commits scannable</h4>
+    <pre><code>[FIX] account: wrong tax on reverse charge invoices</code></pre>
+    <p class="cap">tag · module · what it does</p>
+    <p><code>[FIX]</code> bug fix · <code>[IMP]</code> improvement · <code>[ADD]</code> new feature · <code>[REF]</code> refactor · <code>[REM]</code> removal · <code>[MOV]</code> move or rename · <code>[REV]</code> revert. You can tell the module and the intent before reading a single line of code.</p>
+
+    <h4>Forward-porting — the thing that confuses everyone</h4>
+    <p>Odoo fixes a bug in the <strong>oldest supported version that has it</strong>, and the same fix is then carried forward into the newer branches. So one bug produces several commits, one per version. That is why “is it fixed?” always depends on <em>which version</em> and <em>which build date</em> — not just on whether the PR was merged.</p>
+
+    <h4>The “fixed in PR #123456” recipe</h4>
+    <ol>
+      <li>Open <code>github.com/odoo/odoo/pull/123456</code></li>
+      <li>Read the line at the top: “wants to merge N commits into <code>17.0</code> from …” — that's the target version</li>
+      <li>Confirm the purple <strong>Merged</strong> badge, and note the date</li>
+      <li>Open <strong>Files changed</strong> and read the diff</li>
+      <li>Compare the merge date against the client's version and build date</li>
+    </ol>
+
+    <h4>The six git commands that pay off immediately</h4>
+    <pre><code># history of one file
+git log --oneline -- addons/stock/models/stock_move.py
+
+# find the commit that introduced (or removed) a string
+git log -S "You cannot validate a transfer" --oneline
+
+# who last touched each line, and in which commit
+git blame addons/account/models/account_move.py
+
+# WHAT CHANGED IN A MODULE BETWEEN TWO VERSIONS  <- upgrade research
+git diff 17.0 18.0 --stat -- addons/stock/
+
+# read one commit in full
+git show a1b2c3d
+
+# WHICH VERSIONS CONTAIN THIS FIX   <- answers the client's real question
+git branch -r --contains a1b2c3d</code></pre>
+    <p>The last one is the direct answer to “is this fix in 18.0?”, and almost nobody in support knows it exists.</p>
+
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="gh1"><span class="body"><strong>Clone Odoo properly.</strong> Full history, no huge download:
+        <pre><code>git clone --filter=blob:none https://github.com/odoo/odoo.git
+cd odoo &amp;&amp; git branch -r | head -40</code></pre></span></label></li>
+      <li><label><input type="checkbox" data-id="gh2"><span class="body"><strong>Take five real “fixed in PR #x” references from tickets you have actually handled.</strong> For each, write down: PR number, target branch, merge date, which files changed, and a one-sentence plain-language description of what the fix does. One page total.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh3"><span class="body"><strong>For one of those five, run <code>git branch -r --contains &lt;sha&gt;</code></strong> and list every version that has the fix. Compare that against what you told the client at the time.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh4"><span class="body"><strong>Hunt an error message.</strong> Take a message a client reported, run <code>git log -S "&lt;part of it&gt;" --oneline</code>, find the commit that added it, and read the code around it.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh5"><span class="body"><strong>Diff two versions.</strong> Run <code>git diff 17.0 18.0 --stat -- addons/stock/</code>, pick the three most-changed files, and summarise what changed in each in your own words.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh6"><span class="body"><strong>Read a failing CI check.</strong> Find an open PR on odoo/odoo with a red cross, open the Checks tab, read the log, and write one sentence saying why it failed.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh7"><span class="body"><strong>Trace a line to its reason.</strong> Run <code>git blame</code> on <code>addons/account/models/account_move.py</code>, pick any line, and follow it: line → commit → pull request → the discussion that caused it.</span></label></li>
+      <li><label><input type="checkbox" data-id="gh8"><span class="body"><strong>Find the commit that renamed <code>&lt;tree&gt;</code> to <code>&lt;list&gt;</code>.</strong> You already know the symptom — now find the cause. Write down the PR, the version it landed in, and what else changed alongside it.</span></label></li>
+    </ul>
+  </section>
+
+  <!-- ============ PYTHON ============ -->
+  <section class="track" id="python">
+    <div class="track-head">
+      <p class="eyebrow">Track B</p>
+      <h2>Python</h2>
+      <p class="why">You already read tracebacks, and that is the entry ticket most support people never get. The step change is writing and fixing code. Upgrade work is mostly <em>reading</em> Python — but you cannot read fluently what you have never written.</p>
     </div>
-  </main>
-</div>
-<script>
-const MODULES = [
-  {
-    id: 'm1', icon: '\u{1F4D6}',
-    title: 'Reading Python',
-    desc: 'Learn to read Python code from zero — no programming experience needed.',
-    lessons: [
-      { id: 'm1l1', title: 'What Does Python Look Like?', content: () => `
-<h2>What Does Python Look Like?</h2>
-<p>Python is the language that Odoo is built with. You don't need to write Python — but you DO need to <strong>read</strong> it when investigating issues. Let's start from absolute zero.</p>
 
-<h3>Storing Information: Variables</h3>
-<p>In Python, you store information by giving it a name. Think of it like labeling a box:</p>
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://www.odoo.com/documentation/19.0/developer/tutorials.html"><span class="lk">Odoo — Developer tutorials</span><span class="note">Start with <em>Server framework 101</em>. Type it, don't read it.</span></a>
+      <a href="https://www.odoo.com/documentation/19.0/developer/reference/backend/orm.html"><span class="lk">Odoo — ORM reference</span><span class="note">The page you will keep open forever.</span></a>
+      <a href="https://docs.python.org/3/tutorial/"><span class="lk">Python — official tutorial</span><span class="note">Sections 3–5 and 9. Skip the rest for now.</span></a>
+    </div>
 
-${CB('python', `name = "Sales Order"
-count = 42
-price = 19.99
-is_active = True`)}
+    <h3>What you actually need to understand</h3>
 
-${AN('Each line stores a piece of information:<br><strong>Line 1:</strong> Store the text "Sales Order" and call it <code>name</code><br><strong>Line 2:</strong> Store the number 42 and call it <code>count</code><br><strong>Line 3:</strong> Store the number 19.99 and call it <code>price</code><br><strong>Line 4:</strong> Store True (yes/on) and call it <code>is_active</code>')}
+    <h4>The ORM sits between Python and the database</h4>
+    <p>In Odoo you almost never write SQL. You write <code>self.env['account.move'].search([...])</code> and the ORM turns it into SQL for you. A <strong>model</strong> is a Python class and also a database table. Its <strong>fields</strong> are class attributes and also table columns.</p>
 
-${CO('info', 'Think of it like...', 'A variable is like a cell in a spreadsheet. The name is the column header, and the value is what\'s in the cell.')}
+    <h4><code>self</code> is many records, not one</h4>
+    <p>This is the single most common beginner mistake. <code>self</code> is a <em>recordset</em> — a collection. That is why the most common line in all of Odoo is <code>for rec in self:</code>. If you write code that assumes one record, it breaks the moment someone selects two rows and runs an action.</p>
 
-<h3>Types of Information</h3>
-<p>Python has different types of information, just like a spreadsheet has text, numbers, and checkboxes:</p>
+    <h4>A real computed field</h4>
+    <pre><code>from odoo import models, fields, api
 
-${CT([
-  ['Type', 'What it looks like', 'Example in Odoo'],
-  ['Text (string)', '<code>"Hello"</code> or <code>\'Hello\'</code> (with quotes)', 'Product name, customer email'],
-  ['Whole number (integer)', '<code>42</code> (no quotes)', 'Quantity, sequence number'],
-  ['Decimal number (float)', '<code>19.99</code>', 'Price, tax amount'],
-  ['Yes/No (boolean)', '<code>True</code> or <code>False</code>', 'Is active? Is paid?'],
-  ['Nothing (empty)', '<code>None</code> or <code>False</code>', 'Empty field, no customer selected'],
-])}
-
-${CO('warning', 'Important!', '<code>True</code> and <code>False</code> are always capitalized in Python. Writing <code>true</code> (lowercase) would cause an error. And "nothing" is written as <code>None</code> (also capitalized).')}
-
-<h3>Text in Quotes</h3>
-<p>Whenever you see something in quotes (<code>"..."</code> or <code>'...'</code>), it's text. Without quotes, Python treats it as a variable name or number:</p>
-
-${CB('python', `state = "draft"           # "draft" is text (a value)
-state = draft             # This would be an ERROR - Python looks for
-                          # a variable called draft, which doesn't exist`)}
-
-${AN('<strong>Rule:</strong> Text always needs quotes. Numbers never need quotes. Variable names never have quotes.')}
-
-<h3>Comments: Lines That Do Nothing</h3>
-<p>Lines starting with <code>#</code> are <strong>comments</strong> — notes for humans. Python ignores them completely:</p>
-
-${CB('python', `# This is a comment - Python skips this line
-name = "Sales Order"    # This part after # is also ignored
-# price = 100           # This code is "commented out" - it won't run`)}
-
-${CO('tip', 'Why this matters', 'When reading Odoo code, comments explain what the developer was thinking. They\'re like sticky notes in the code.')}
-
-${QZ([
-  { q: 'In Python, how do you write "yes" or "true"?', opts: ['true', 'True', 'TRUE', 'yes'], correct: 1, explain: 'Python uses <code>True</code> (capital T). This is different from many other languages. You\'ll see it constantly in Odoo — for example, <code>required=True</code> on a field.' },
-  { q: 'What does <code>#</code> mean at the start of a line?', opts: ['It\'s a number', 'It\'s a comment — Python ignores that line', 'It deletes something', 'It\'s an error'], correct: 1, explain: 'The <code>#</code> symbol starts a comment. Everything after it on that line is ignored by Python. Developers use it to write notes in their code.' },
-  { q: 'What is wrong with: <code>name = Sales Order</code> ?', opts: ['Nothing wrong', 'Text needs quotes: "Sales Order"', 'name is a reserved word', 'You can\'t use spaces'], correct: 1, explain: 'Text (strings) must be wrapped in quotes: <code>"Sales Order"</code> or <code>\'Sales Order\'</code>. Without quotes, Python thinks <code>Sales</code> and <code>Order</code> are variable names.' },
-])}
-` },
-
-      { id: 'm1l2', title: 'If/Else: Making Decisions', content: () => `
-<h2>If/Else: Making Decisions</h2>
-<p>Code often needs to make decisions: "if this condition is true, do this thing." This is the most common pattern you'll see in Odoo.</p>
-
-<h3>Basic If Statement</h3>
-${CB('python', `if order.state == 'draft':
-    print("This is a quotation")`)}
-
-${AN('<strong>Line 1:</strong> "IF the order\'s state equals \'draft\', THEN..."<br><strong>Line 2:</strong> "...print this message." Notice the 4 spaces at the beginning — this tells Python that this line is INSIDE the if.')}
-
-${CO('warning', 'Indentation = Structure', 'In Python, <strong>spaces at the beginning of a line matter!</strong> The 4 spaces (or a tab) before <code>print</code> tell Python that line belongs to the <code>if</code>. Think of it like nesting — indented lines are "inside" the line above them.')}
-
-<h3>If / Else</h3>
-${CB('python', `if order.state == 'sale':
-    print("This order is confirmed")
-else:
-    print("This order is NOT confirmed")`)}
-
-${AN('<strong>Translation:</strong> "IF the order\'s state is \'sale\', print \'confirmed\'. OTHERWISE (else), print \'NOT confirmed\'."')}
-
-<h3>If / Elif / Else (Multiple Choices)</h3>
-${CB('python', `if order.state == 'draft':
-    print("Quotation")
-elif order.state == 'sale':
-    print("Confirmed order")
-elif order.state == 'cancel':
-    print("Cancelled")
-else:
-    print("Something else")`)}
-
-${AN('<code>elif</code> means "else if" — it\'s another condition to check. Python checks them top to bottom and runs the FIRST one that matches. <code>else</code> catches everything that didn\'t match any condition above it.')}
-
-<h3>Comparison Symbols</h3>
-${CT([
-  ['Symbol', 'Meaning', 'Example'],
-  ['<code>==</code>', 'Equals (is it the same?)', '<code>state == \'draft\'</code>'],
-  ['<code>!=</code>', 'Not equals (is it different?)', '<code>state != \'cancel\'</code>'],
-  ['<code>></code>', 'Greater than', '<code>amount > 1000</code>'],
-  ['<code><</code>', 'Less than', '<code>quantity < 0</code>'],
-  ['<code>>=</code>', 'Greater than or equal', '<code>amount >= 100</code>'],
-  ['<code><=</code>', 'Less than or equal', '<code>price <= 0</code>'],
-])}
-
-${CO('warning', '== vs =', 'One equals sign (<code>=</code>) means "store this value." Two equals signs (<code>==</code>) means "check if these are the same." This is a very common mistake to look out for.')}
-
-<h3>Combining Conditions</h3>
-${CB('python', `# AND - both must be true
-if order.state == 'draft' and order.amount_total > 0:
-    print("Valid draft order")
-
-# OR - at least one must be true
-if state == 'draft' or state == 'sent':
-    print("Not confirmed yet")
-
-# NOT - reverses the condition
-if not order.partner_id:
-    print("No customer set!")`)}
-
-${AN('<code>and</code> = both conditions must be true<br><code>or</code> = at least one must be true<br><code>not</code> = flips true to false and false to true')}
-
-<h3>Checking for Empty Values</h3>
-${CB('python', `# In Odoo, empty relational fields are False (not None!)
-if order.partner_id:
-    print("Customer is set")
-else:
-    print("No customer!")
-
-# This is the same as:
-if order.partner_id != False:
-    print("Customer is set")`)}
-
-${CO('info', 'Odoo Specialty', 'In Odoo, when a field is empty (like no customer selected), its value is <code>False</code>, not <code>None</code>. So <code>if order.partner_id:</code> means "if a customer is set." If no customer is selected, <code>partner_id</code> is <code>False</code>.')}
-
-${QZ([
-  { q: 'What does <code>==</code> mean in Python?', opts: ['Store a value', 'Check if two things are equal', 'Make something equal', 'An error'], correct: 1, explain: '<code>==</code> is a comparison: "are these the same?" One <code>=</code> stores a value (<code>x = 5</code>). Two <code>==</code> checks equality (<code>x == 5</code>).' },
-  { q: 'Why are spaces at the start of a line important?', opts: ['They make code look pretty', 'They tell Python which lines belong together (inside an if, loop, etc.)', 'They are optional', 'They create comments'], correct: 1, explain: 'Python uses indentation (spaces) instead of braces. Lines indented under an <code>if</code> are the code that runs when the condition is true. Wrong indentation = error.' },
-  { q: 'In Odoo, what is the value of an empty Many2one field (like no customer selected)?', opts: ['None', 'null', 'False', '0'], correct: 2, explain: 'In Odoo, empty relational fields are <code>False</code> (not None). This is important — it\'s why you see <code>if record.partner_id:</code> to check "is a customer set?"' },
-])}
-` },
-
-      { id: 'm1l3', title: 'Loops and Lists', content: () => `
-<h2>Loops and Lists</h2>
-<p>Odoo often needs to go through multiple records — like checking every line on a sales order. That's what loops do.</p>
-
-<h3>Lists: Multiple Items</h3>
-<p>A list is like a column in a spreadsheet — multiple values stored together:</p>
-
-${CB('python', `states = ['draft', 'sent', 'sale', 'done', 'cancel']
-prices = [10.00, 25.50, 99.99]
-numbers = [1, 2, 3, 4, 5]`)}
-
-${AN('Square brackets <code>[ ]</code> create a list. Items are separated by commas. You can put any type of data in a list.')}
-
-<h3>For Loops: Going Through Each Item</h3>
-${CB('python', `for line in order.order_line:
-    print(line.product_id.name)
-    print(line.quantity)`)}
-
-${AN('<strong>Translation:</strong> "For EACH line in the order\'s list of order lines, print the product name and quantity."<br><br>This is like scrolling through each row of a table in a spreadsheet, one row at a time.')}
-
-${CO('info', 'Think of it like...', 'A <code>for</code> loop is like going through a stack of papers one by one. <code>for line in order.order_line:</code> means "pick up each order line, one at a time, and call it <code>line</code>. Then do the indented stuff with it."')}
-
-<h3>The Most Important Loop in Odoo</h3>
-<p>You will see this pattern <strong>everywhere</strong> in Odoo code:</p>
-
-${CB('python', `for record in self:
-    record.amount_total = record.amount_untaxed + record.amount_tax`)}
-
-${AN('<strong>Why <code>for record in self</code>?</strong> In Odoo, <code>self</code> can contain ONE record or MANY records at once. This loop makes sure the code works whether there\'s 1 record or 100. It goes through each one and does the calculation.')}
-
-${CO('warning', 'Very Common Error', 'If code does <code>self.partner_id.name</code> WITHOUT the loop, and <code>self</code> has more than one record, Odoo crashes with: <strong>"Expected singleton"</strong>. This means "I expected one record but got multiple." The fix is always: add a <code>for record in self:</code> loop.')}
-
-<h3>Dictionaries: Named Information</h3>
-<p>A dictionary stores information with labels (keys), like a form with named fields:</p>
-
-${CB('python', `vals = {
-    'name': 'SO001',
-    'state': 'draft',
-    'amount_total': 1500.00,
-}`)}
-
-${AN('Curly braces <code>{ }</code> create a dictionary. Each item has a <strong>key</strong> (like <code>\'name\'</code>) and a <strong>value</strong> (like <code>\'SO001\'</code>), separated by a colon <code>:</code>.<br><br>Think of it like a form: the key is the field label, the value is what you filled in.')}
-
-<p>You access a value using its key:</p>
-${CB('python', `vals['name']        # Returns 'SO001'
-vals['state']       # Returns 'draft'
-vals.get('name')    # Also returns 'SO001', but safer`)}
-
-${CO('tip', 'In Odoo', 'You\'ll see dictionaries everywhere — they\'re how Odoo passes data around. When you see <code>.create({\'name\': \'SO001\'})</code>, that dictionary is the data for the new record.')}
-
-${QZ([
-  { q: 'What does <code>for line in order.order_line:</code> do?', opts: ['Deletes all order lines', 'Creates a new order line', 'Goes through each order line one by one', 'Counts the order lines'], correct: 2, explain: 'A <code>for</code> loop goes through each item in a list. Here it picks up each order line, one at a time, and calls it <code>line</code>. The indented code below runs once for each line.' },
-  { q: 'You see the error "Expected singleton." What does this mean?', opts: ['A record is missing', 'Code expected ONE record but got MULTIPLE — needs a for loop', 'The database has a problem', 'A field is empty'], correct: 1, explain: '"Expected singleton" means the code tried to do something that only works with one record, but <code>self</code> contained multiple records. The fix is to add <code>for record in self:</code>.' },
-  { q: 'What is <code>{\'name\': \'SO001\', \'state\': \'draft\'}</code>?', opts: ['A list', 'A dictionary — named pairs of data', 'An error', 'A function'], correct: 1, explain: 'This is a dictionary: pairs of keys and values, like a small form. <code>\'name\'</code> is the label (key), <code>\'SO001\'</code> is the data (value).' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm2', icon: '\u{1F9F1}',
-    title: 'Odoo Models',
-    desc: 'What models are, how fields work, and how data is stored — explained simply.',
-    lessons: [
-      { id: 'm2l1', title: 'What Is a Model?', content: () => `
-<h2>What Is a Model?</h2>
-<p>Every "thing" in Odoo — a sales order, a customer, a product, an invoice — is defined by a <strong>model</strong>. A model is like a spreadsheet template: it defines what columns (fields) exist and what type of data goes in each.</p>
-
-<h3>A Simple Model</h3>
-${CB('python', `from odoo import models, fields
-
-class LibraryBook(models.Model):
-    _name = 'library.book'
-    _description = 'Library Book'
-
-    name = fields.Char(string='Title', required=True)
-    author = fields.Char(string='Author')
-    pages = fields.Integer(string='Number of Pages')
-    is_available = fields.Boolean(string='Available', default=True)`)}
-
-${AN('<strong>Line 1:</strong> Import tools from Odoo (needed in every model file).<br><br><strong>Line 3:</strong> Create a new model called <code>LibraryBook</code>. The <code>(models.Model)</code> part means "this is a standard Odoo model."<br><br><strong>Line 4:</strong> <code>_name = \'library.book\'</code> — This is the <strong>technical name</strong>. It\'s how Odoo identifies this model everywhere. In the database, dots become underscores: table = <code>library_book</code>.<br><br><strong>Line 5:</strong> <code>_description</code> — A human-readable name.<br><br><strong>Lines 7-10:</strong> The fields — each one is a column in the database table.')}
-
-${CO('info', 'Think of it like...', 'A model is a <strong>spreadsheet template</strong>:<br>- <code>_name</code> = the spreadsheet\'s name<br>- Each <code>fields.XXX</code> = a column<br>- Each record = a row<br><br>So <code>library.book</code> is a spreadsheet called "library_book" with columns: Title, Author, Number of Pages, Available.')}
-
-<h3>Common Model Names You'll See</h3>
-${CT([
-  ['Model Name', 'What It Is'],
-  ['<code>res.partner</code>', 'Contacts (customers, vendors, companies)'],
-  ['<code>sale.order</code>', 'Sales orders / Quotations'],
-  ['<code>sale.order.line</code>', 'Lines on a sales order'],
-  ['<code>account.move</code>', 'Invoices / Journal entries'],
-  ['<code>account.move.line</code>', 'Invoice lines / Journal items'],
-  ['<code>product.product</code>', 'Products (specific variants)'],
-  ['<code>product.template</code>', 'Product templates (the main product)'],
-  ['<code>stock.picking</code>', 'Delivery orders / Receipts'],
-])}
-
-${CO('tip', 'In Developer Mode', 'When you enable Developer Mode and hover over a field, Odoo shows you the model name (e.g., <code>sale.order</code>). This is the <code>_name</code> value. You can use it to find the code file!')}
-
-<h3>Finding the File</h3>
-<p>To find the Python file for a model:</p>
-<ol>
-<li>Take the model name: <code>sale.order</code></li>
-<li>The part before the first dot is the module: <code>sale</code></li>
-<li>Replace dots with underscores for the filename: <code>sale_order.py</code></li>
-<li>Look in: <code>sale/models/sale_order.py</code></li>
-</ol>
-
-${QZ([
-  { q: 'If a model has <code>_name = \'account.move\'</code>, what is the database table called?', opts: ['account.move', 'account_move', 'AccountMove', 'account-move'], correct: 1, explain: 'Odoo converts dots to underscores. <code>account.move</code> becomes the database table <code>account_move</code>.' },
-  { q: 'What is a "model" in Odoo?', opts: ['A 3D object', 'A template that defines what data is stored — like a spreadsheet with named columns', 'A type of report', 'A user interface element'], correct: 1, explain: 'A model defines the structure of data — what fields exist and what type they are. Each model becomes a database table where records are stored.' },
-])}
-` },
-
-      { id: 'm2l2', title: 'Field Types', content: () => `
-<h2>Field Types</h2>
-<p>Fields are the columns of your "spreadsheet." Each field type stores a specific kind of data.</p>
-
-<h3>Simple Fields</h3>
-${CB('python', `# Text fields
-name = fields.Char(string='Name')          # Short text (one line)
-description = fields.Text(string='Notes')   # Long text (multiple lines)
-
-# Number fields
-quantity = fields.Integer(string='Quantity')     # Whole numbers: 1, 2, 3
-price = fields.Float(string='Price')             # Decimal numbers: 19.99
-amount = fields.Monetary(string='Total')         # Money (with currency)
-
-# Yes/No field
-active = fields.Boolean(string='Active', default=True)
-
-# Date fields
-date_order = fields.Date(string='Order Date')
-create_date = fields.Datetime(string='Created On')
-
-# Dropdown (Selection)
-state = fields.Selection([
-    ('draft', 'Draft'),
-    ('confirmed', 'Confirmed'),
-    ('done', 'Done'),
-], string='Status', default='draft')`)}
-
-${AN('<strong>Char</strong> = short text (name, email, reference number)<br><strong>Text</strong> = long text (description, notes)<br><strong>Integer</strong> = whole numbers (quantity, sequence)<br><strong>Float</strong> = decimal numbers (price, percentage)<br><strong>Monetary</strong> = money with currency symbol<br><strong>Boolean</strong> = checkbox (yes/no, true/false)<br><strong>Date / Datetime</strong> = dates and timestamps<br><strong>Selection</strong> = dropdown list with fixed options')}
-
-<h3>Selection Fields (Dropdowns)</h3>
-<p>Selection fields are very common. They store a <strong>code</strong> but display a <strong>label</strong>:</p>
-
-${CB('python', `state = fields.Selection([
-    ('draft', 'Draft'),           # 'draft' = stored in database
-    ('confirmed', 'Confirmed'),   # 'Confirmed' = shown to user
-    ('done', 'Done'),
-], string='Status', default='draft')`)}
-
-${CO('warning', 'Important!', 'The database stores <code>\'draft\'</code> (the code), NOT <code>\'Draft\'</code> (the label). When you see code checking the state, it always uses the code: <code>if record.state == \'draft\'</code> — never <code>\'Draft\'</code>.')}
-
-<h3>Field Options You'll See</h3>
-${CT([
-  ['Option', 'What it does', 'Example'],
-  ['<code>string=</code>', 'The label shown in the UI', '<code>string=\'Customer Name\'</code>'],
-  ['<code>required=True</code>', 'This field cannot be empty', 'Name on a sales order'],
-  ['<code>default=</code>', 'Value for new records', '<code>default=\'draft\'</code>'],
-  ['<code>readonly=True</code>', 'Cannot be edited in UI', 'Computed totals'],
-  ['<code>help=</code>', 'Tooltip when you hover', 'Explanation text'],
-  ['<code>tracking=True</code>', 'Changes appear in chatter', 'Status changes, amount changes'],
-])}
-
-<h3>The Special "active" Field</h3>
-<p>If a model has <code>active = fields.Boolean(default=True)</code>, then setting <code>active=False</code> <strong>archives</strong> the record — it disappears from normal views but still exists in the database.</p>
-
-${CO('support', 'Support Tip', 'If a customer says "my product/contact/record disappeared!" — it might be archived. In Developer Mode, add the filter <code>(\'active\', \'=\', False)</code> to find it, or use the "Include Archived" filter.')}
-
-${QZ([
-  { q: 'What is the difference between <code>fields.Char</code> and <code>fields.Text</code>?', opts: ['Char is for numbers', 'Char = short text (one line), Text = long text (multiple lines)', 'They are the same', 'Text is for HTML'], correct: 1, explain: 'Char renders as a single-line input box. Text renders as a multi-line text area. Use Char for names/references, Text for descriptions/notes.' },
-  { q: 'A Selection field stores <code>(\'draft\', \'Draft\')</code>. What value is saved in the database?', opts: ['Draft', 'draft', 'Both', '0'], correct: 1, explain: 'The FIRST value in each pair is stored in the database (<code>\'draft\'</code>). The SECOND value (<code>\'Draft\'</code>) is just the label shown to users.' },
-])}
-` },
-
-      { id: 'm2l3', title: 'Relational Fields: How Data Connects', content: () => `
-<h2>Relational Fields: How Data Connects</h2>
-<p>A sales order needs a customer. An invoice has invoice lines. A product belongs to a category. These connections are made with <strong>relational fields</strong>.</p>
-
-<h3>Many2one: "This record points to ONE other record"</h3>
-<p>Think of a dropdown where you select ONE option:</p>
-
-${CB('python', `partner_id = fields.Many2one('res.partner', string='Customer')`)}
-
-${AN('This field connects to the <code>res.partner</code> model (contacts). On the form, it appears as a dropdown where you pick ONE customer. In the database, it stores just the customer\'s ID number (like 42).')}
-
-${CO('info', 'Think of it like...', 'Many2one is like a "lookup" in a spreadsheet — it points to one row in another table. A sales order\'s "Customer" field points to one specific contact.')}
-
-<h3>One2many: "This record has MANY related records"</h3>
-<p>Think of the lines on a sales order — one order has many lines:</p>
-
-${CB('python', `# On the Sales Order model:
-order_line = fields.One2many('sale.order.line', 'order_id', string='Order Lines')`)}
-
-${AN('This says: "A sales order has many order lines." The <code>\'order_id\'</code> part tells Odoo which field on the ORDER LINE points back to the order. One2many fields don\'t store anything in the database — they just show the related records.')}
-
-<h3>Many2many: "Multiple to multiple"</h3>
-<p>Think of tags — a product can have many tags, and a tag can be on many products:</p>
-
-${CB('python', `tag_ids = fields.Many2many('crm.tag', string='Tags')`)}
-
-<h3>Naming Convention</h3>
-<p>You can guess the field type from its name:</p>
-
-${CT([
-  ['Name ends with', 'It\'s probably', 'Example'],
-  ['<code>_id</code>', 'Many2one (points to ONE record)', '<code>partner_id</code>, <code>company_id</code>'],
-  ['<code>_ids</code>', 'One2many or Many2many (points to MANY)', '<code>tag_ids</code>, <code>invoice_ids</code>'],
-])}
-
-<h3>Following the Chain</h3>
-<p>You can follow relational fields with dots, like following a trail:</p>
-
-${CB('python', `order.partner_id                    # The customer record
-order.partner_id.name               # The customer's name
-order.partner_id.email              # The customer's email
-order.partner_id.country_id.name    # The customer's country name`)}
-
-${AN('<code>order.partner_id</code> = go to the customer<br><code>.name</code> = get their name<br><code>.country_id</code> = go to their country<br><code>.name</code> = get the country\'s name<br><br>You\'re following a chain: Order → Customer → Country → Country Name')}
-
-${CO('warning', 'Common Error', 'If <code>partner_id</code> is empty (no customer selected), it\'s <code>False</code>. And <code>False.name</code> causes an error: <strong>AttributeError: \'bool\' object has no attribute \'name\'</strong>. This is one of the most common errors in Odoo!')}
-
-${QZ([
-  { q: 'A field is called <code>partner_id</code> (ends with _id). What type is it probably?', opts: ['Text field', 'Many2one — points to ONE record', 'Many2many — points to many records', 'Integer'], correct: 1, explain: 'Fields ending in <code>_id</code> are almost always Many2one — they point to one specific record in another model. <code>partner_id</code> points to one contact.' },
-  { q: 'What does <code>order.partner_id.country_id.name</code> do?', opts: ['Creates a new country', 'Follows the chain: order → customer → their country → country name', 'Causes an error', 'Deletes the country'], correct: 1, explain: 'It follows the relational chain step by step. Each dot goes one step further through the linked records.' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm3', icon: '\u{2699}\u{FE0F}',
-    title: 'How Odoo Works',
-    desc: 'Classes, self, super(), decorators — the patterns you see everywhere in Odoo.',
-    lessons: [
-      { id: 'm3l1', title: 'Classes and self', content: () => `
-<h2>Classes and "self"</h2>
-<p>Every Odoo model is built using something called a <strong>class</strong>. You don't need to understand classes deeply — just know how to read them.</p>
-
-<h3>What is a Class?</h3>
-<p>A class is like a <strong>blueprint</strong>. The model is the blueprint, and each record is a thing built from that blueprint:</p>
-
-${CB('python', `class SaleOrder(models.Model):
-    _name = 'sale.order'
-
-    name = fields.Char(string='Order Reference')
-    state = fields.Selection([...])
-
-    def action_confirm(self):
-        self.write({'state': 'sale'})`)}
-
-${AN('<strong>Line 1:</strong> <code>class SaleOrder(models.Model):</code> — This defines the model. <code>SaleOrder</code> is the class name, <code>models.Model</code> means it\'s a regular Odoo model.<br><br><strong>Lines 4-5:</strong> Field definitions — the data this model stores.<br><br><strong>Lines 7-8:</strong> A <strong>method</strong> (function) that belongs to this model. This one confirms the order by setting the state to \'sale\'.')}
-
-<h3>What is "self"?</h3>
-<p><code>self</code> is the word Python uses to refer to <strong>"the current record(s)"</strong>. When you click "Confirm" on a sales order, <code>self</code> IS that sales order.</p>
-
-${CB('python', `def action_confirm(self):
-    # self = the record(s) this method is running on
-    self.write({'state': 'sale'})
-    # This changes the state of the current record(s) to 'sale'`)}
-
-${CO('info', 'Think of it like...', '<code>self</code> is like saying "this record" or "me." When you click a button on Sales Order SO001, <code>self</code> IS SO001. When the code says <code>self.name</code>, it means "the name of the record I\'m working on."')}
-
-<h3>Every Method Has "self" First</h3>
-<p>You'll notice every method (function) in an Odoo model starts with <code>self</code>:</p>
-
-${CB('python', `def action_confirm(self):        # self is always first
-    ...
-
-def compute_total(self):         # self is always first
-    ...
-
-def _check_quantity(self):       # self is always first
-    ...`)}
-
-${AN('This is just how Python works — every method in a class must have <code>self</code> as its first parameter. It\'s automatic. You can just treat it as "the current record."')}
-
-<h3>What is super()?</h3>
-<p><code>super()</code> means "do what the original code does." When a custom module changes how "Confirm" works, it uses <code>super()</code> to still run the original logic:</p>
-
-${CB('python', `def action_confirm(self):
-    result = super().action_confirm()    # Run the ORIGINAL confirm logic
-    self._send_notification()            # Then do extra stuff
-    return result`)}
-
-${AN('<strong>Line 2:</strong> <code>super().action_confirm()</code> = "First, run the normal confirm process (from the original Odoo code)."<br><strong>Line 3:</strong> Then add extra behavior — in this case, send a notification.<br><br>Without <code>super()</code>, the original code would be skipped entirely!')}
-
-${CO('warning', 'When super() is missing', 'If a custom module\'s <code>action_confirm</code> does NOT call <code>super()</code>, the entire original confirm logic is skipped. This is almost always a bug — it means the order state won\'t change, stock rules won\'t run, etc.')}
-
-${QZ([
-  { q: 'What does <code>self</code> refer to in a method?', opts: ['The Odoo server', 'The current record(s) the method is running on', 'The current user', 'The database'], correct: 1, explain: '<code>self</code> means "the current record(s)." When you click a button on a specific sales order, <code>self</code> is that sales order.' },
-  { q: 'What does <code>super().action_confirm()</code> do?', opts: ['Deletes the record', 'Runs the ORIGINAL version of action_confirm (before customization)', 'Creates a super user', 'Cancels the confirm'], correct: 1, explain: '<code>super()</code> calls the original method. Custom modules use it to say "first do everything the original code does, then add my extra stuff."' },
-])}
-` },
-
-      { id: 'm3l2', title: 'Decorators and Computed Fields', content: () => `
-<h2>Decorators and Computed Fields</h2>
-<p>When you see <code>@something</code> above a method, that's a <strong>decorator</strong>. It tells Odoo WHEN to run that method.</p>
-
-<h3>@api.depends — "Recalculate When..."</h3>
-<p>This is the most common decorator. It says: "When these fields change, run this calculation."</p>
-
-${CB('python', `price_subtotal = fields.Float(compute='_compute_subtotal', store=True)
-
-@api.depends('quantity', 'price_unit')
-def _compute_subtotal(self):
-    for line in self:
-        line.price_subtotal = line.quantity * line.price_unit`)}
-
-${AN('<strong>Line 1:</strong> <code>price_subtotal</code> is a <strong>computed field</strong> — its value is calculated, not typed in by users. <code>compute=</code> tells Odoo which method does the calculation.<br><br><strong>Line 3:</strong> <code>@api.depends(\'quantity\', \'price_unit\')</code> means "recalculate whenever quantity OR price_unit changes."<br><br><strong>Lines 4-6:</strong> The method loops through each record (<code>for line in self</code>) and calculates: subtotal = quantity x unit price.')}
-
-${CO('info', 'Why computed fields matter', 'When you see a field that shows a calculated value (like a total), it\'s a computed field. If the total shows a wrong number, you need to find the compute method to understand HOW it\'s calculated.')}
-
-<h3>@api.onchange — "When the User Changes..."</h3>
-<p>Runs in the browser when a user changes a field (BEFORE saving):</p>
-
-${CB('python', `@api.onchange('partner_id')
-def _onchange_partner(self):
-    if self.partner_id:
-        self.payment_term_id = self.partner_id.property_payment_term_id`)}
-
-${AN('<strong>Translation:</strong> "When the user selects a different customer in the form, automatically fill in the payment terms from that customer\'s settings."<br><br>This runs in real-time as you fill the form — it\'s what makes fields auto-fill when you select something.')}
-
-<h3>@api.constrains — "Validate When Saving"</h3>
-${CB('python', `@api.constrains('quantity')
-def _check_quantity(self):
-    for line in self:
-        if line.quantity <= 0:
-            raise ValidationError("Quantity must be positive!")`)}
-
-${AN('This runs when you SAVE a record. It checks if the quantity is valid. If not, it shows an error message and prevents the save.')}
-
-<h3>Summary of Decorators</h3>
-${CT([
-  ['Decorator', 'When does it run?', 'What is it for?'],
-  ['<code>@api.depends()</code>', 'When listed fields change', 'Computing field values (totals, subtotals)'],
-  ['<code>@api.onchange()</code>', 'When user changes a field in the form', 'Auto-filling related fields'],
-  ['<code>@api.constrains()</code>', 'When saving a record', 'Validating data (showing errors)'],
-  ['<code>@api.model</code>', 'Called on the model, not records', 'Default values, general operations'],
-])}
-
-${QZ([
-  { q: 'What does <code>@api.depends(\'quantity\', \'price_unit\')</code> mean?', opts: ['Delete quantity and price_unit', 'Recalculate this field whenever quantity or price_unit changes', 'This method creates those fields', 'This method requires those parameters'], correct: 1, explain: '<code>@api.depends</code> lists the "trigger" fields. When ANY of them change, Odoo automatically runs the method below it to recalculate the computed field.' },
-  { q: 'A field shows a wrong total. Where do you look?', opts: ['The XML view', 'The <code>compute=</code> method and its <code>@api.depends</code>', 'The database directly', 'The browser console'], correct: 1, explain: 'Find the field definition, look at <code>compute=\'_compute_xxx\'</code>, then find that method and check the <code>@api.depends</code> to understand what triggers the calculation and how it\'s calculated.' },
-])}
-` },
-
-      { id: 'm3l3', title: 'Inheritance: Adding to Existing Code', content: () => `
-<h2>Inheritance: Adding to Existing Code</h2>
-<p>Odoo modules extend each other. A custom module can add fields and change behavior of existing models WITHOUT changing the original code.</p>
-
-<h3>Extending an Existing Model</h3>
-${CB('python', `class SaleOrder(models.Model):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    loyalty_points = fields.Integer(string='Loyalty Points')
+    margin_pct = fields.Float(
+        string="Margin %",
+        compute='_compute_margin_pct',
+        store=True,
+    )
 
-    def action_confirm(self):
-        result = super().action_confirm()
-        self._calculate_loyalty_points()
-        return result`)}
+    @api.depends('amount_untaxed', 'order_line.purchase_price')
+    def _compute_margin_pct(self):
+        for order in self:                     # self is MANY records
+            cost = sum(order.order_line.mapped('purchase_price'))
+            if order.amount_untaxed:
+                order.margin_pct = (order.amount_untaxed - cost) / order.amount_untaxed * 100
+            else:
+                order.margin_pct = 0.0         # assign in EVERY branch</code></pre>
+    <p>Three ways this goes wrong in the wild, all of which you will see in tickets:</p>
+    <ul>
+      <li>Missing a field in <code>@api.depends</code> → the value silently never updates</li>
+      <li>Forgetting to assign in one branch → <code>ValueError: Compute method failed to assign</code></li>
+      <li><code>store=True</code> with incomplete depends → wrong numbers saved in the database, which is worse than no cache at all</li>
+    </ul>
 
-${AN('<strong>Line 2:</strong> <code>_inherit = \'sale.order\'</code> means "I\'m EXTENDING the existing sale.order model." This is NOT creating a new model — it\'s adding to the existing one.<br><br><strong>Line 4:</strong> Adds a new field <code>loyalty_points</code> to ALL sales orders.<br><br><strong>Lines 6-9:</strong> Changes what happens when you confirm an order. <code>super()</code> runs the original confirm, then it adds loyalty point calculation.')}
+    <h4>Inheritance and <code>super()</code></h4>
+    <p><code>_inherit = 'account.move'</code> extends an existing model rather than creating a new one. Calling <code>super()</code> runs the original method so your code <em>adds</em> behaviour instead of replacing it. Custom code that overrides <code>create</code>, <code>write</code> or <code>unlink</code> without calling <code>super()</code> correctly is a recurring cause of broken databases — and a recurring cause of broken upgrades.</p>
 
-${CO('info', 'Think of it like...', 'Inheritance is like a sticky note on an existing form. The original form stays the same, but you\'re sticking extra fields and instructions on top of it. The <code>_inherit</code> line says "which form I\'m adding to."')}
+    <h4>Reading a traceback</h4>
+    <p>Read it <strong>bottom up</strong>. The last line says what went wrong; the lines above are the path that got there. Then scan downward for the first line that mentions a <em>custom</em> module — that is almost always your suspect, not the core line that finally raised the error.</p>
 
-<h3>How to Spot It</h3>
-<p>When you see <code>_inherit = \'sale.order\'</code> WITHOUT a <code>_name</code> line, it's extending the existing model. If you see BOTH <code>_inherit</code> AND <code>_name</code>, it's creating a new model (less common).</p>
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="py1"><span class="body"><strong>Do <em>Server framework 101</em> end to end</strong> in your Railway environment. Type every line by hand. Do not copy-paste, and do not skip the exercises.</span></label></li>
+      <li><label><input type="checkbox" data-id="py2"><span class="body"><strong>Add a stored computed field to your own <code>starx_gps</code> addon.</strong> Then break it on purpose three ways: remove the <code>@api.depends</code>, remove the assignment in the <code>else</code> branch, and change a field type underneath it. Record the exact traceback and the one-line fix for each.</span></label></li>
+      <li><label><input type="checkbox" data-id="py3"><span class="body"><strong>Read <code>action_confirm()</code></strong> in <code>addons/sale/models/sale_order.py</code> and write a ten-bullet plain-language summary of what it does, in order.</span></label></li>
+      <li><label><input type="checkbox" data-id="py4"><span class="body"><strong>Override <code>create()</code></strong> on a model in your addon so it writes a line to the log, calling <code>super()</code> properly. Then write it <em>wrongly</em>, without <code>super()</code>, and note everything that quietly stops working.</span></label></li>
+      <li><label><input type="checkbox" data-id="py5"><span class="body"><strong>Live in the shell for an hour.</strong> Run <code>odoo shell -d &lt;your_db&gt;</code> and do five real operations: a <code>search</code> with a domain, a <code>mapped()</code>, a <code>filtered()</code>, a <code>write</code>, and a <code>create</code>. Watch what the ORM does to the data.</span></label></li>
+      <li><label><input type="checkbox" data-id="py6"><span class="body"><strong>Dissect three real tracebacks</strong> from tickets you handled this month. For each, mark the line where a custom module first appears and explain in one sentence why that line is the suspect.</span></label></li>
+    </ul>
+  </section>
 
-${CT([
-  ['Code', 'What it does'],
-  ['<code>_inherit = \'sale.order\'</code> (no _name)', 'EXTENDS the existing sale.order — adds fields/methods to it'],
-  ['<code>_name = \'custom.order\'</code> + <code>_inherit = \'sale.order\'</code>', 'Creates a NEW model by copying sale.order'],
-])}
-
-<h3>Why This Matters for Support</h3>
-<p>When investigating an issue, a field or behavior might come from ANY module that inherits the model. If you can't find a field in the main module, check custom/third-party modules that use <code>_inherit</code>.</p>
-
-${CO('support', 'Investigation Tip', 'If you search for a field like <code>loyalty_points</code> in <code>sale/models/sale_order.py</code> and can\'t find it, search ALL modules for <code>_inherit = \'sale.order\'</code> — the field might be added by a custom module.')}
-
-${QZ([
-  { q: 'What does <code>_inherit = \'sale.order\'</code> (without _name) do?', opts: ['Creates a new model', 'Extends the existing sale.order — adds fields and methods to it', 'Deletes sale.order', 'Copies sale.order to a new table'], correct: 1, explain: 'When <code>_inherit</code> is used WITHOUT <code>_name</code>, it extends the existing model. New fields are added to the same database table. Existing methods can be overridden.' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm4', icon: '\u{1F4C4}',
-    title: 'XML Views',
-    desc: 'Understand what you see on screen — forms, buttons, lists, and how they connect to code.',
-    lessons: [
-      { id: 'm4l1', title: 'What is XML?', content: () => `
-<h2>What is XML?</h2>
-<p>XML is the language Odoo uses to define <strong>what you see on screen</strong> — the forms, lists, buttons, and menus. If you've seen HTML (web pages), XML looks very similar.</p>
-
-<h3>XML Basics</h3>
-${CB('xml', `<form string="Sales Order">
-    <field name="partner_id"/>
-    <field name="date_order"/>
-</form>`)}
-
-${AN('<strong>Line 1:</strong> <code>&lt;form&gt;</code> starts a form view.<br><strong>Lines 2-3:</strong> <code>&lt;field name="partner_id"/&gt;</code> means "show the partner_id field here." The <code>/&gt;</code> at the end is a self-closing tag (no separate closing tag needed).<br><strong>Line 4:</strong> <code>&lt;/form&gt;</code> ends the form.')}
-
-<h3>Key Rules</h3>
-<ul>
-<li>Tags must always close: either <code>&lt;field name="x"&gt;&lt;/field&gt;</code> or self-closing <code>&lt;field name="x"/&gt;</code></li>
-<li>Attribute values always need quotes: <code>name="partner_id"</code></li>
-<li>Tags are case-sensitive: <code>&lt;field&gt;</code> works, <code>&lt;Field&gt;</code> doesn't</li>
-</ul>
-
-<h3>The Record Wrapper</h3>
-<p>Views in Odoo are stored as records in the database. They're wrapped in a <code>&lt;record&gt;</code> tag:</p>
-
-${CB('xml', `<record id="view_order_form" model="ir.ui.view">
-    <field name="name">sale.order.form</field>
-    <field name="model">sale.order</field>
-    <field name="arch" type="xml">
-        <form string="Sales Order">
-            <field name="partner_id"/>
-        </form>
-    </field>
-</record>`)}
-
-${AN('<strong>id="view_order_form"</strong> — A unique identifier for this view. You\'ll see this in Developer Mode.<br><br><strong>model="ir.ui.view"</strong> — This record is a view definition.<br><br><strong>name: sale.order.form</strong> — The view\'s name.<br><br><strong>model: sale.order</strong> — This view is for the sale.order model.<br><br><strong>&lt;field name="arch"&gt;</strong> — The actual view layout goes inside here. "arch" means "architecture."')}
-
-${CO('tip', 'In Developer Mode', 'When you click Debug Menu → Edit View, you see the XML inside <code>&lt;field name="arch"&gt;</code>. The id (like <code>sale.view_order_form</code>) is shown in the debug info.')}
-
-${QZ([
-  { q: 'What does <code>&lt;field name="partner_id"/&gt;</code> do in a form view?', opts: ['Creates a new field', 'Displays the partner_id field on the form', 'Deletes the partner_id field', 'Renames the field'], correct: 1, explain: 'In XML views, <code>&lt;field name="partner_id"/&gt;</code> tells Odoo to show that field at this position in the form.' },
-])}
-` },
-
-      { id: 'm4l2', title: 'Reading Form Views', content: () => `
-<h2>Reading Form Views</h2>
-<p>Let's learn to read a real Odoo form view — the kind you see when you open an invoice or sales order.</p>
-
-<h3>The Main Sections</h3>
-${CB('xml', `<form string="Account Entry">
-    <header>
-        <!-- Buttons and status bar go here -->
-    </header>
-    <sheet>
-        <!-- Main content goes here -->
-    </sheet>
-    <div class="oe_chatter">
-        <!-- Chat/log notes go here -->
+  <!-- ============ XML ============ -->
+  <section class="track" id="xml">
+    <div class="track-head">
+      <p class="eyebrow">Track C</p>
+      <h2>XML</h2>
+      <p class="why">Everything a user sees is XML: views, menus, actions, reports, data. Most customisation lives here, and so does most upgrade breakage — because a patch anchored to a core view stops matching the moment that core view changes.</p>
     </div>
-</form>`)}
-
-${AN('<strong>&lt;header&gt;</strong> — The top bar with buttons (Confirm, Send, Pay) and the status bar<br><strong>&lt;sheet&gt;</strong> — The main content area (looks like a white paper sheet)<br><strong>&lt;div class="oe_chatter"&gt;</strong> — The chatter at the bottom (messages, log notes, followers)')}
-
-<h3>Reading Buttons</h3>
-<p>Here's a real button from the Account Move (invoice) form:</p>
-
-${CB('xml', `<button name="action_post"
-        string="Confirm"
-        class="oe_highlight"
-        type="object"
-        groups="account.group_account_invoice"
-        invisible="hide_post_button or move_type == 'entry'"
-/>`)}
-
-${AN('<strong>name="action_post"</strong> — When clicked, run the Python method called <code>action_post</code><br><br><strong>string="Confirm"</strong> — The text shown on the button<br><br><strong>class="oe_highlight"</strong> — Make the button purple/highlighted (the primary action)<br><br><strong>type="object"</strong> — This calls a Python method (not an action or URL)<br><br><strong>groups="account.group_account_invoice"</strong> — Only users in the "Invoicing" group can see this button<br><br><strong>invisible="hide_post_button or move_type == \'entry\'"</strong> — Hide this button when <code>hide_post_button</code> is true OR when the move type is \'entry\'')}
-
-${CO('info', 'Reading "invisible"', 'The <code>invisible</code> attribute controls WHEN a button or field is hidden. It\'s a condition: when it\'s true, the element disappears. In the example above, the "Confirm" button is hidden when <code>hide_post_button</code> is true (the invoice can\'t be confirmed) or when <code>move_type == \'entry\'</code> (it\'s a journal entry, not an invoice).')}
-
-<h3>Groups and Columns</h3>
-${CB('xml', `<sheet>
-    <group>
-        <group string="Customer Info">
-            <field name="partner_id"/>
-            <field name="date_order"/>
-        </group>
-        <group string="Payment">
-            <field name="payment_term_id"/>
-            <field name="currency_id"/>
-        </group>
-    </group>
-</sheet>`)}
-
-${AN('A <code>&lt;group&gt;</code> inside a <code>&lt;group&gt;</code> creates a <strong>two-column layout</strong>. The inner groups become left and right columns. The <code>string</code> attribute gives each column a title.')}
-
-<h3>Notebook (Tabs)</h3>
-${CB('xml', `<notebook>
-    <page string="Order Lines" name="order_lines">
-        <field name="order_line"/>
-    </page>
-    <page string="Other Info" name="other_info">
-        <field name="note"/>
-    </page>
-</notebook>`)}
-
-${AN('<code>&lt;notebook&gt;</code> creates tabs at the bottom of the form. Each <code>&lt;page&gt;</code> is one tab. <code>string</code> is the tab\'s title.')}
-
-${QZ([
-  { q: 'A button has <code>type="object"</code> and <code>name="action_post"</code>. What happens when you click it?', opts: ['It opens a URL', 'It calls the Python method called action_post', 'It opens a popup', 'It saves the record'], correct: 1, explain: '<code>type="object"</code> means the button calls a Python method. The method name is in the <code>name</code> attribute. So clicking this button runs <code>action_post()</code> on the current record.' },
-  { q: 'What does <code>invisible="state != \'draft\'"</code> mean?', opts: ['The field is deleted when not in draft', 'The field is HIDDEN when the state is NOT draft (only visible in draft)', 'The field is always invisible', 'The field is required'], correct: 1, explain: 'The element is hidden when the condition is true. <code>state != \'draft\'</code> means "state is not draft" — so the element is visible ONLY in draft state.' },
-])}
-` },
-
-      { id: 'm4l3', title: 'View Inheritance: Modifying Views', content: () => `
-<h2>View Inheritance: Modifying Views</h2>
-<p>Just like Python models can be extended, XML views can too. A custom module can add fields and buttons to existing views without changing the original file.</p>
-
-<h3>How It Works</h3>
-${CB('xml', `<record id="view_order_form_inherit_custom" model="ir.ui.view">
-    <field name="name">sale.order.form.inherit.custom</field>
-    <field name="model">sale.order</field>
-    <field name="inherit_id" ref="sale.view_order_form"/>
-    <field name="arch" type="xml">
-
-        <xpath expr="//field[@name='partner_id']" position="after">
-            <field name="loyalty_points"/>
-        </xpath>
-
-    </field>
-</record>`)}
-
-${AN('<strong>inherit_id</strong> — Points to the ORIGINAL view being modified (the sale order form).<br><br><strong>xpath</strong> — Finds a specific element in the original view. Here: "find the field with name=partner_id."<br><br><strong>position="after"</strong> — "Put my new content AFTER that element."<br><br><strong>Result:</strong> The <code>loyalty_points</code> field appears right after the customer field on the sales order form.')}
-
-<h3>XPath: Finding Elements</h3>
-<p>XPath is the language for finding elements in XML. Common patterns:</p>
-
-${CT([
-  ['XPath Expression', 'What it finds'],
-  ['<code>//field[@name=\'partner_id\']</code>', 'The field named partner_id, anywhere in the view'],
-  ['<code>//button[@name=\'action_confirm\']</code>', 'The button named action_confirm'],
-  ['<code>//page[@name=\'other_info\']</code>', 'The tab named other_info'],
-  ['<code>//header</code>', 'The header section'],
-  ['<code>//notebook</code>', 'The notebook (tab container)'],
-])}
-
-<h3>Positions: Where to Put Things</h3>
-${CT([
-  ['Position', 'What it does'],
-  ['<code>after</code>', 'Insert AFTER the found element'],
-  ['<code>before</code>', 'Insert BEFORE the found element'],
-  ['<code>inside</code>', 'Insert INSIDE the element (as last child)'],
-  ['<code>replace</code>', 'REPLACE the element completely'],
-  ['<code>attributes</code>', 'Change the element\'s attributes (like invisible, string)'],
-])}
-
-${CO('support', 'Why this matters for support', 'When a field appears or disappears unexpectedly, it might be because a custom module\'s inherited view is adding/hiding it. In Developer Mode, you can see all inherited views that modify the current view.')}
-
-${QZ([
-  { q: 'What does <code>inherit_id</code> do in a view record?', opts: ['Creates a new view', 'Points to the ORIGINAL view being modified', 'Deletes the parent view', 'Copies the view'], correct: 1, explain: '<code>inherit_id</code> tells Odoo which existing view this modification applies to. The XPath inside then finds specific elements in that view to modify.' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm5', icon: '\u{1F50D}',
-    title: 'Developer Mode',
-    desc: 'Your most powerful investigation tool — tracing fields, views, and connections.',
-    lessons: [
-      { id: 'm5l1', title: 'Using Developer Mode', content: () => `
-<h2>Using Developer Mode</h2>
-<p>Developer Mode is your <strong>superpower</strong> as a support analyst. It shows you the technical information behind everything you see on screen.</p>
-
-<h3>How to Turn It On</h3>
-<ol>
-<li><strong>Easiest way:</strong> Add <code>?debug=1</code> to the URL<br>Example: <code>https://mydb.odoo.com/web?debug=1</code></li>
-<li><strong>Settings way:</strong> Settings → General Settings → scroll down → "Activate the developer mode"</li>
-</ol>
-
-<h3>What Changes</h3>
-<p>When Developer Mode is on, you get:</p>
-<ul>
-<li>A <strong>bug icon</strong> in the top menu bar — click it for debug options</li>
-<li><strong>Tooltips on fields</strong> — hover over any field label to see its technical name, type, and model</li>
-<li><strong>Technical info in the URL</strong> — shows the record ID and model name</li>
-</ul>
-
-<h3>The Debug Menu (Bug Icon)</h3>
-${CT([
-  ['Option', 'What it shows you'],
-  ['Edit View: Form', 'The XML of the current form view'],
-  ['Edit View: List', 'The XML of the current list view'],
-  ['Edit Action', 'The action behind the current menu (model, filters, context)'],
-  ['View Fields', 'ALL fields on the current model with their types'],
-])}
-
-<h3>The Investigation Workflow</h3>
-<p>When a user reports "this field shows wrong data":</p>
-<ol>
-<li><strong>Enable Developer Mode</strong> on the database</li>
-<li><strong>Hover over the field</strong> — note the technical name and model</li>
-<li><strong>Find the model file</strong> — convert <code>sale.order</code> → <code>sale/models/sale_order.py</code></li>
-<li><strong>Search for the field</strong> — look for <code>field_name = fields.</code></li>
-<li><strong>If it's computed</strong> — look at <code>compute=</code> to find the calculation method</li>
-<li><strong>Check @api.depends</strong> — what triggers the calculation?</li>
-</ol>
-
-${CO('support', 'Real Example', 'User says: "The total on my invoice is wrong."<br>1. Hover over total → technical name: <code>amount_total</code>, model: <code>account.move</code><br>2. Find <code>account/models/account_move.py</code><br>3. Search for <code>amount_total = fields.</code><br>4. It says <code>compute=\'_compute_amount\'</code><br>5. Find <code>_compute_amount</code> → it sums up the invoice lines<br>6. Check individual lines — are THEY correct?')}
-
-${QZ([
-  { q: 'How do you find the technical name of a field on screen?', opts: ['Look at the database', 'Enable Developer Mode and hover over the field label', 'Check the Python source code first', 'It\'s shown in the URL'], correct: 1, explain: 'With Developer Mode on, hovering over any field label shows a tooltip with the technical field name, type, and model. This is the fastest way to identify any field.' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm6', icon: '\u{1F41B}',
-    title: 'Reading Error Messages',
-    desc: 'The most important skill: understanding tracebacks and common Odoo errors.',
-    lessons: [
-      { id: 'm6l1', title: 'What is a Traceback?', content: () => `
-<h2>What is a Traceback?</h2>
-<p>When Odoo crashes, it shows a <strong>traceback</strong> — a trail of breadcrumbs showing exactly what the code was doing when it failed. Learning to read these will save you hours of investigation.</p>
-
-<h3>A Simple Example</h3>
-${CB('text', `Traceback (most recent call last):
-  File "/odoo/addons/sale/models/sale_order.py", line 812, in _action_confirm
-    self.order_line._action_launch_stock_rule()
-  File "/odoo/addons/sale_stock/models/sale_order.py", line 145, in _launch_stock
-    raise UserError("Not enough stock for product Laptop")
-odoo.exceptions.UserError: Not enough stock for product Laptop`)}
-
-<h3>How to Read It: ALWAYS START FROM THE BOTTOM</h3>
-
-${AN('<strong>Step 1 — Read the LAST line:</strong><br><code>UserError: Not enough stock for product Laptop</code><br>This is THE ERROR. It tells you WHAT went wrong.<br><br><strong>Step 2 — Read the line above it:</strong><br><code>raise UserError("Not enough stock...")</code><br>This is WHERE in the code the error happened.<br><br><strong>Step 3 — Read the file path:</strong><br><code>sale_stock/models/sale_order.py, line 145</code><br>This tells you WHICH FILE and WHICH LINE.')}
-
-${CO('tip', 'The Golden Rule', '<strong>Always read tracebacks from BOTTOM to TOP.</strong><br>- Bottom = WHAT went wrong (the error message)<br>- Middle = WHERE it happened (the file and line)<br>- Top = HOW the code got there (the chain of calls)')}
-
-<h3>What to Skip</h3>
-<p>You can skip lines that mention internal Odoo framework files. Focus on the lines in <code>addons/</code>:</p>
-
-${CB('text', `  File "/odoo/odoo/http.py", line 2274           ← SKIP (framework)
-  File "/odoo/odoo/service/model.py", line 185    ← SKIP (framework)
-  File "/odoo/addons/sale/models/sale_order.py"   ← LOOK AT THIS
-  File "/odoo/addons/sale_stock/models/sale.py"   ← LOOK AT THIS`)}
-
-${AN('Lines with <code>odoo/http.py</code>, <code>service/model.py</code>, <code>odoo/api.py</code> are internal plumbing — skip them. Focus on lines in <code>addons/</code> — that\'s where the business logic is.')}
-
-<h3>Common Error Types</h3>
-${CT([
-  ['Error Type', 'What it means', 'What to look for'],
-  ['<code>UserError</code>', 'A business rule says "no"', 'An intentional check in the code — like "can\'t confirm without lines"'],
-  ['<code>ValidationError</code>', 'Data failed a check', 'A <code>@api.constrains</code> method rejected the data'],
-  ['<code>AccessError</code>', 'Permission denied', 'User doesn\'t have the right security group'],
-  ['<code>TypeError</code>', 'Wrong type of data', 'Code expected a number but got text, or got None'],
-  ['<code>AttributeError</code>', 'Trying to access something that doesn\'t exist', 'Often: accessing a field on an empty (False) relational field'],
-  ['<code>ValueError</code>', 'Invalid value', '"Expected singleton" = expected 1 record, got multiple'],
-])}
-
-${QZ([
-  { q: 'When reading a traceback, where should you start?', opts: ['The very first line at the top', 'The middle', 'The last line at the bottom — that\'s the actual error', 'Any line will do'], correct: 2, explain: 'Always start at the bottom. The last line tells you WHAT the error is. Then work upward to find WHERE it happened (in the addons/ files).' },
-  { q: 'Which files should you focus on in a traceback?', opts: ['odoo/http.py and service/model.py', 'Files in addons/ — that\'s the business logic', 'All files equally', 'Only the first file'], correct: 1, explain: 'Files in <code>addons/</code> contain the business logic (sales, invoicing, stock, etc.). Framework files like http.py and model.py are internal plumbing you can skip.' },
-])}
-` },
-
-      { id: 'm6l2', title: 'Real Traceback Practice', content: () => `
-<h2>Real Traceback Practice</h2>
-<p>Let's read a REAL traceback from an actual Odoo error, step by step.</p>
-
-<h3>The Error</h3>
-${CB('text', `Traceback (most recent call last):
-  File "/home/odoo/src/odoo/19.0/odoo/http.py", line 2274, in _serve_db
-    return service_model.retrying(serve_func, env=self.env)
-  File "/home/odoo/src/odoo/19.0/odoo/service/model.py", line 185, in retrying
-    result = func()
-  File "/home/odoo/src/odoo/19.0/odoo/http.py", line 2329, in _serve_ir_http
-    response = self.dispatcher.dispatch(rule.endpoint, args)
-  File "/home/odoo/src/odoo/19.0/odoo/http.py", line 2544, in dispatch
-    result = self.request.registry['ir.http']._dispatch(endpoint)
-  File "/home/odoo/src/odoo/19.0/addons/web/controllers/dataset.py", line 32, in call_kw
-    return call_kw(request.env[model], method, args, kwargs)
-  File "/home/odoo/src/odoo/19.0/odoo/service/model.py", line 93, in call_kw
-    result = method(recs, *args, **kwargs)
-  File ".../account_accountant/models/account_bank_statement.py", line 1532, in edit_reconcile_line
-    self._set_move_line_to_statement_line_move(
-  File ".../account_accountant/models/account_bank_statement.py", line 802, in _set_move_line_to_statement_line_move
-    lines_to_add_balance = sum(line['balance'] for line in lines_to_add)
-TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'`)}
-
-<h3>Let's Read It Together</h3>
-
-<h4>Step 1: Read the LAST line (the error)</h4>
-${CB('text', `TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'`)}
-${AN('<strong>TypeError</strong> = wrong type of data.<br><strong>"unsupported operand type(s) for +: \'int\' and \'NoneType\'"</strong> = Python tried to ADD a number (<code>int</code>) and an empty value (<code>NoneType</code>). You can\'t add a number and "nothing" together.')}
-
-${CO('info', 'What is NoneType?', '<code>NoneType</code> means the value is <code>None</code> — it\'s empty/missing. The code expected a number but got nothing instead. It\'s like trying to add 5 + [empty cell] in a spreadsheet.')}
-
-<h4>Step 2: Find WHERE it happened</h4>
-${CB('text', `File ".../account_bank_statement.py", line 802, in _set_move_line_to_statement_line_move
-    lines_to_add_balance = sum(line['balance'] for line in lines_to_add)`)}
-${AN('<strong>File:</strong> <code>account_bank_statement.py</code> in the <code>account_accountant</code> module (Enterprise)<br><strong>Line:</strong> 802<br><strong>Method:</strong> <code>_set_move_line_to_statement_line_move</code><br><strong>Code:</strong> It\'s trying to SUM the \'balance\' from a list of lines. One of those balances is <code>None</code> instead of a number.')}
-
-<h4>Step 3: Find WHAT triggered it</h4>
-${CB('text', `File ".../account_bank_statement.py", line 1532, in edit_reconcile_line
-    self._set_move_line_to_statement_line_move(`)}
-${AN('The method <code>edit_reconcile_line</code> called <code>_set_move_line_to_statement_line_move</code>. This happens when you\'re reconciling a bank statement line.')}
-
-<h4>Step 4: Skip the framework lines</h4>
-<p>All the lines about <code>http.py</code>, <code>model.py</code>, <code>dataset.py</code> are just the framework calling the business code. We can ignore them.</p>
-
-<h3>The Full Story</h3>
-<p>Reading it all together:</p>
-<ol>
-<li>A user was <strong>editing a reconciliation</strong> on a bank statement</li>
-<li>The code tried to <strong>sum up the balance</strong> of some journal lines</li>
-<li>One of the lines had <code>None</code> for its balance (instead of a number like <code>0.0</code>)</li>
-<li>Python can't add <code>None</code> to a number, so it crashed</li>
-</ol>
-
-${CO('support', 'What to tell the team', '"The error occurs during bank reconciliation in account_accountant. At line 802 of account_bank_statement.py, it tries to sum balances but one journal item has a None balance value instead of a number. This is likely a data issue — a journal item is missing its balance value, or a bug in the code that creates these items."')}
-
-${QZ([
-  { q: 'In this traceback, <code>TypeError: unsupported operand type(s) for +: \'int\' and \'NoneType\'</code> means:', opts: ['The server is overloaded', 'Code tried to add a number and an empty value (None) together', 'The user typed the wrong data', 'The database is full'], correct: 1, explain: 'Python can\'t add a number (int) and None (empty/missing value). Something that should have been a number was empty instead.' },
-  { q: 'Which line tells you WHERE in the code the error happened?', opts: ['The first line of the traceback', 'The last File line before the error message — it shows the file and line number', 'The "Traceback" header line', 'The RPC_ERROR at the end'], correct: 1, explain: 'The last <code>File "..."</code> line before the error message shows the exact file, line number, and method where the crash occurred. In this case: account_bank_statement.py, line 802.' },
-])}
-` },
-
-      { id: 'm6l3', title: 'Common Errors Explained', content: () => `
-<h2>Common Errors Explained</h2>
-<p>Here are the errors you'll see most often, with plain explanations of what each one means.</p>
-
-<h3>1. AttributeError: 'bool' object has no attribute 'name'</h3>
-${CB('text', `AttributeError: 'bool' object has no attribute 'name'`)}
-<p><strong>Translation:</strong> Code tried to read <code>.name</code> from something that is <code>False</code> (a boolean, not a record).</p>
-<p><strong>Why:</strong> An empty Many2one field (like no customer selected) is <code>False</code> in Odoo. Code did <code>record.partner_id.name</code> but <code>partner_id</code> was empty.</p>
-<p><strong>The fix:</strong> The code needs to check first: <code>if record.partner_id:</code></p>
-
-<h3>2. ValueError: Expected singleton</h3>
-${CB('text', `ValueError: Expected singleton: sale.order(15, 23, 42)`)}
-<p><strong>Translation:</strong> Code expected ONE record but got THREE (records with IDs 15, 23, 42).</p>
-<p><strong>Why:</strong> The code did something like <code>self.partner_id.name</code> but <code>self</code> contained multiple records.</p>
-<p><strong>The fix:</strong> Add a <code>for record in self:</code> loop.</p>
-
-<h3>3. AccessError: Not allowed</h3>
-${CB('text', `AccessError: You are not allowed to modify 'Sales Order' (sale.order) records.`)}
-<p><strong>Translation:</strong> The user's security group doesn't have permission.</p>
-<p><strong>Where to look:</strong> Check the user's groups in Settings → Users, and check <code>ir.model.access.csv</code> files.</p>
-
-<h3>4. Invalid view definition</h3>
-${CB('text', `ParseError: "Invalid view definition"
-Element '<field name="custom_field">' cannot be located in parent view`)}
-<p><strong>Translation:</strong> A view tries to show a field that doesn't exist on the model.</p>
-<p><strong>Why:</strong> Usually a custom module adds a field to a view, but the field's module is not installed or was removed.</p>
-
-<h3>5. TypeError: unsupported operand type(s)</h3>
-${CB('text', `TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'`)}
-<p><strong>Translation:</strong> Code tried to do math with a number and an empty value (None).</p>
-<p><strong>Why:</strong> A field that should have a number has <code>None</code> instead. Usually a data issue or a field that wasn't set.</p>
-
-<h3>6. UserError / ValidationError</h3>
-${CB('text', `UserError: It is not allowed to confirm a sales order that has no line.`)}
-<p><strong>Translation:</strong> This is an <strong>intentional</strong> check. A developer wrote this on purpose to prevent something.</p>
-<p><strong>Where to look:</strong> Search the error message text in the code. You'll find the <code>raise UserError(...)</code> or <code>raise ValidationError(...)</code>.</p>
-
-<h3>Quick Reference Table</h3>
-${CT([
-  ['Error you see', 'What it means in plain English'],
-  ['<code>AttributeError: \'bool\' has no attribute...</code>', 'A field is empty (False) and code tried to read from it'],
-  ['<code>Expected singleton</code>', 'Code expected 1 record but got multiple — needs a loop'],
-  ['<code>AccessError</code>', 'User doesn\'t have permission — check their security groups'],
-  ['<code>Invalid view definition</code>', 'A view references a field that doesn\'t exist'],
-  ['<code>TypeError: ... \'NoneType\'</code>', 'A value is missing/empty where a number or text was expected'],
-  ['<code>UserError</code>', 'An intentional business rule check — the code is saying "no" on purpose'],
-  ['<code>ValidationError</code>', 'Data failed a validation check on save'],
-  ['<code>RecursionError</code>', 'Code is calling itself in an infinite loop'],
-])}
-
-${QZ([
-  { q: '"AttributeError: \'bool\' object has no attribute \'street\'" — what probably happened?', opts: ['The street field doesn\'t exist', 'A relational field (like partner_id) is empty, and code tried to access .street on it', 'The database is broken', 'The view is wrong'], correct: 1, explain: 'Empty Many2one fields are <code>False</code> in Odoo. <code>record.partner_id.street</code> becomes <code>False.street</code> when no partner is set, causing this error.' },
-  { q: 'You see <code>UserError: "Cannot delete a posted invoice"</code>. Is this a bug?', opts: ['Yes, it\'s a code bug', 'No — this is an intentional check. The code was designed to prevent this action.', 'It depends on the version', 'Always a database issue'], correct: 1, explain: '<code>UserError</code> means a developer wrote a check on purpose. The code found a condition that shouldn\'t happen and raised an error. It\'s working as designed — the user needs to take a different approach.' },
-])}
-` },
-    ]
-  },
-
-  {
-    id: 'm7', icon: '\u{1F3C6}',
-    title: 'Putting It All Together',
-    desc: 'Practice reading real Odoo code — models, views, and tracing issues.',
-    lessons: [
-      { id: 'm7l1', title: 'Reading a Real View', content: () => `
-<h2>Reading a Real View</h2>
-<p>Let's practice reading a real piece of the invoice form view. This is similar to what you see in Developer Mode → Edit View.</p>
-
-<h3>The Header Section</h3>
-${CB('xml', `<header>
-    <button name="action_post" string="Confirm"
-            class="oe_highlight" type="object"
-            groups="account.group_account_invoice"
-            invisible="hide_post_button or move_type == 'entry'"/>
-
-    <button name="action_register_payment" string="Pay"
-            class="oe_highlight" type="object"
-            groups="account.group_account_invoice"
-            invisible="state != 'posted'
-                       or payment_state not in ('not_paid', 'partial')
-                       or move_type not in ('out_invoice', 'in_invoice')"/>
-</header>`)}
-
-${AN('<strong>Button 1 - "Confirm":</strong><br>- Calls <code>action_post</code> method<br>- Only visible to the "Invoicing" group<br>- HIDDEN when: <code>hide_post_button</code> is true OR the type is a journal entry<br><br><strong>Button 2 - "Pay":</strong><br>- Calls <code>action_register_payment</code> method<br>- HIDDEN when: state is not \'posted\' OR payment is already done OR it\'s not an invoice<br>- In other words: only shows on posted, unpaid invoices')}
-
-${CO('support', 'Reading invisible conditions', 'When a user asks "why can\'t I see the Pay button?", check the <code>invisible</code> condition:<br>1. Is the invoice posted? (<code>state != \'posted\'</code>)<br>2. Is it already paid? (<code>payment_state not in (\'not_paid\', \'partial\')</code>)<br>3. Is it an invoice type? (<code>move_type not in (\'out_invoice\', \'in_invoice\')</code>)<br><br>If ANY of these conditions is true, the button is hidden.')}
-
-<h3>Reading "invisible" Step by Step</h3>
-<p>The <code>invisible</code> attribute uses simple logic words:</p>
-
-${CT([
-  ['Word', 'Meaning', 'Example'],
-  ['<code>or</code>', 'If ANY condition is true, hide it', '<code>state == \'draft\' or state == \'cancel\'</code>'],
-  ['<code>and</code>', 'If ALL conditions are true, hide it', '<code>state == \'posted\' and amount == 0</code>'],
-  ['<code>not in</code>', 'Value is NOT in this list', '<code>move_type not in (\'out_invoice\',)</code>'],
-  ['<code>!=</code>', 'Not equal to', '<code>state != \'draft\'</code>'],
-  ['<code>==</code>', 'Equal to', '<code>state == \'posted\'</code>'],
-])}
-
-${QZ([
-  { q: 'A button has <code>invisible="state != \'posted\' or payment_state == \'paid\'"</code>. When do you see it?', opts: ['Always', 'Only when state IS posted AND payment_state is NOT paid', 'Only in draft', 'Never'], correct: 1, explain: 'The button is HIDDEN when state is not posted OR when it\'s already paid. So it\'s VISIBLE only when state IS posted AND it\'s NOT paid.' },
-])}
-` },
-
-      { id: 'm7l2', title: 'Module Structure: Where to Find Things', content: () => `
-<h2>Module Structure: Where to Find Things</h2>
-<p>Knowing where files live helps you find the code behind any feature.</p>
-
-<h3>Every Module Is a Folder</h3>
-${CB('text', `sale/                              # Module folder
-├── __manifest__.py                # Module info (name, dependencies)
-├── __init__.py                    # Lists Python files to load
-├── models/                        # Python code (data definitions)
-│   ├── __init__.py
-│   └── sale_order.py              # The SaleOrder model
-├── views/                         # XML views (what you see on screen)
-│   └── sale_order_views.xml       # Forms, lists, menus
-├── security/                      # Who can access what
-│   └── ir.model.access.csv        # Read/Write/Create/Delete permissions
-└── data/                          # Default data`)}
-
-<h3>Finding What You Need</h3>
-${CT([
-  ['I want to find...', 'Look in...'],
-  ['How a field is defined', '<code>models/*.py</code> — search for <code>field_name = fields.</code>'],
-  ['How a form looks', '<code>views/*_views.xml</code> — look inside <code>&lt;form&gt;</code> tags'],
-  ['Menu and action setup', '<code>views/*_views.xml</code> — look for <code>&lt;menuitem&gt;</code> and <code>ir.actions.act_window</code>'],
-  ['Who can access what', '<code>security/ir.model.access.csv</code>'],
-  ['What the module depends on', '<code>__manifest__.py</code> → <code>depends</code> list'],
-  ['A compute method', '<code>models/*.py</code> — search for <code>def _compute_</code>'],
-])}
-
-${CO('tip', 'Quick Finding Trick', 'When you know the model name (like <code>sale.order</code>), convert dots to underscores to get the filename: <code>sale_order.py</code>. The module is the first part: <code>sale</code>.')}
-
-${QZ([
-  { q: 'You need to check who can create sales orders. Where do you look?', opts: ['models/sale_order.py', 'views/sale_order_views.xml', 'security/ir.model.access.csv', '__manifest__.py'], correct: 2, explain: '<code>ir.model.access.csv</code> defines CRUD (Create, Read, Update, Delete) permissions per security group. Each line says which group can do what with which model.' },
-])}
-` },
-
-      { id: 'm7l3', title: 'Complete Investigation Workflow', content: () => `
-<h2>Complete Investigation Workflow</h2>
-<p>Let's bring everything together into a workflow you can use for any support case.</p>
-
-<h3>Scenario: "The total on my sales order is wrong"</h3>
-
-<h4>Step 1: Identify the field</h4>
-<p>Enable Developer Mode → Hover over the total field → Note:</p>
-<ul>
-<li>Technical name: <code>amount_total</code></li>
-<li>Model: <code>sale.order</code></li>
-<li>Type: Monetary (computed)</li>
-</ul>
-
-<h4>Step 2: Find the field in code</h4>
-${CB('python', `# In sale/models/sale_order.py:
-amount_total = fields.Monetary(
-    string="Total",
-    compute='_compute_amounts',
-    store=True,
-)`)}
-${AN('The field is computed by <code>_compute_amounts</code> method. <code>store=True</code> means the value is saved in the database.')}
-
-<h4>Step 3: Find the compute method</h4>
-${CB('python', `@api.depends('order_line.price_subtotal', 'order_line.price_tax')
-def _compute_amounts(self):
-    for order in self:
-        lines = order.order_line.filtered(lambda x: not x.display_type)
-        order.amount_untaxed = sum(lines.mapped('price_subtotal'))
-        order.amount_tax = sum(lines.mapped('price_tax'))
-        order.amount_total = order.amount_untaxed + order.amount_tax`)}
-
-${AN('<strong>@api.depends</strong> tells us: this recalculates when order line subtotals or taxes change.<br><br><strong>Line 4:</strong> Get the order lines, but skip "display type" lines (section headers and notes).<br><br><strong>Line 5:</strong> Sum up all the subtotals.<br><br><strong>Line 6:</strong> Sum up all the taxes.<br><br><strong>Line 7:</strong> Total = untaxed amount + taxes.')}
-
-<h4>Step 4: Check the chain</h4>
-<p>If the total is wrong, check:</p>
-<ol>
-<li>Are the individual line subtotals correct?</li>
-<li>Are the tax amounts correct?</li>
-<li>Is a custom module overriding <code>_compute_amounts</code>?</li>
-<li>Did the depends trigger fire? (Sometimes stored computed fields need a manual recompute)</li>
-</ol>
-
-<h3>Your Investigation Template</h3>
-${CB('text', `ISSUE: [What the user reports]
-STEPS TO REPRODUCE: 1... 2... 3...
-AFFECTS: [Everyone? One user? One record?]
-
-INVESTIGATION:
-- Field: [technical name from Developer Mode]
-- Model: [model name from Developer Mode]
-- Is it computed? [yes/no, compute method name]
-- What does it depend on? [@api.depends fields]
-- Are the source values correct?
-- Is a custom module involved?
-
-ROOT CAUSE: [What's actually wrong]
-RESOLUTION: [What needs to happen]`)}
-
-${CO('tip', 'Remember', 'You now have the skills to:<br>- Read Python code (variables, if/else, loops, classes)<br>- Understand models and fields<br>- Read XML views (forms, buttons, invisible conditions)<br>- Read tracebacks (bottom-up!)<br>- Use Developer Mode to trace anything on screen<br><br>Practice every day — each support case is a chance to strengthen these skills!')}
-
-${QZ([
-  { q: 'A computed field shows a wrong value. What\'s the first thing to check?', opts: ['The database server', 'The @api.depends list and the compute method logic', 'The user\'s browser', 'The XML view'], correct: 1, explain: 'Find the <code>compute=</code> method and check what <code>@api.depends</code> lists. Then read the method to understand the calculation. Check if the source values (the depends fields) are correct.' },
-  { q: 'A user says "I can see the Sales menu but the list is empty." What\'s most likely?', opts: ['The database is empty', 'Record rules are filtering out all records for this user', 'The list view XML is broken', 'The browser is blocking content'], correct: 1, explain: 'If the menu is visible but the list is empty, the user has access to the model (can see the menu) but record rules are hiding all records. Check their security group and company assignment.' },
-])}
-` },
-    ]
-  },
-];
-
-// ============================================================
-// HELPERS
-// ============================================================
-function CB(lang, code) {
-  const lines = code.split('\n');
-  const hl = lines.map((line, i) => {
-    const num = i + 1;
-    const h = HS(line, lang);
-    return '<span class="line"><span class="line-num">' + num + '</span>' + h + '</span>';
-  }).join('');
-  return '<div class="code-block"><div class="code-header"><span class="lang">' + lang + '</span></div><div class="code-content">' + hl + '</div></div>';
-}
-function HS(line, lang) {
-  const e = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  if (lang === 'python') return e.replace(/(#.*$)/gm,'<span class="cm">$1</span>').replace(/\b(from|import|class|def|return|if|elif|else|for|in|while|not|and|or|is|True|False|None|raise|try|except|finally|with|as|lambda|yield|pass|break|continue|self|super)\b/g,'<span class="kw">$1</span>').replace(/(f?"""[\s\S]*?"""|f?\'\'\'[\s\S]*?\'\'\'|f?"[^"]*"|f?\'[^\']*\')/g,'<span class="str">$1</span>').replace(/@[\w.]+/g,'<span class="dec">$&</span>').replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');
-  if (lang === 'xml') return e.replace(/(&lt;!--.*?--&gt;)/g,'<span class="xml-cm">$1</span>').replace(/(&lt;\/?)([\w:.]+)/g,'$1<span class="tag">$2</span>').replace(/([\w:-]+)(=)("[^"]*")/g,'<span class="attr">$1</span>$2<span class="val">$3</span>');
-  return e;
-}
-function CT(rows) { const h=rows[0],b=rows.slice(1); return '<table class="compare-table"><thead><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+b.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table>'; }
-function CO(type, title, body) { return '<div class="callout callout-'+type+'"><div class="callout-title">'+title+'</div><div>'+body+'</div></div>'; }
-function AN(text) { return '<div class="code-annotation">'+text+'</div>'; }
-function TG(title, content) { const id='tg_'+Math.random().toString(36).substr(2,9); return '<div class="toggle-block"><div class="toggle-header" onclick="toggleBlock(\''+id+'\')"><span class="arrow">&#9654;</span> '+title+'</div><div class="toggle-content" id="'+id+'">'+content+'</div></div>'; }
-function QZ(questions) { const qid='qz_'+Math.random().toString(36).substr(2,9); return '<div class="quiz-section"><h3>Check Your Understanding</h3>'+questions.map((q,i)=>'<div class="quiz-question" id="'+qid+'_q'+i+'"><p>'+(i+1)+'. '+q.q+'</p><ul class="quiz-options">'+q.opts.map((o,j)=>'<li onclick="selectAnswer(\''+qid+'\','+i+','+j+','+q.correct+')" data-q="'+qid+'" data-qi="'+i+'" data-oi="'+j+'">'+o+'</li>').join('')+'</ul><div class="quiz-explanation" id="'+qid+'_e'+i+'">'+q.explain+'</div></div>').join('')+'</div>'; }
-
-// ============================================================
-// STATE
-// ============================================================
-const STATE_KEY = 'odoo_academy_progress';
-function loadState() { try { const r=localStorage.getItem(STATE_KEY); return r?JSON.parse(r):{completed:{},lastLesson:null}; } catch { return {completed:{},lastLesson:null}; } }
-function saveState(s) { try { localStorage.setItem(STATE_KEY,JSON.stringify(s)); } catch {} }
-let state = loadState();
-function getCompletionPercent() { const t=MODULES.reduce((s,m)=>s+m.lessons.length,0); return Math.round((Object.keys(state.completed).length/t)*100); }
-function getModuleCompletion(mod) { const d=mod.lessons.filter(l=>state.completed[l.id]).length; return {done:d,total:mod.lessons.length}; }
-
-// ============================================================
-// RENDERING
-// ============================================================
-function renderSidebar() {
-  const list=document.getElementById('moduleList');
-  list.innerHTML=MODULES.map(mod=>{const{done,total}=getModuleCompletion(mod);const isExp=mod.lessons.some(l=>l.id===state.lastLesson);return '<div class="module-group"><div class="module-header '+(isExp?'expanded':'')+'" onclick="toggleModule(this)"><span class="arrow">&#9654;</span><span class="mod-icon">'+mod.icon+'</span><span>'+mod.title+'</span><span class="mod-progress">'+done+'/'+total+'</span></div><div class="lesson-list '+(isExp?'open':'')+'">'+mod.lessons.map(l=>'<div class="lesson-item '+(state.completed[l.id]?'completed':'')+' '+(state.lastLesson===l.id?'active':'')+'" onclick="openLesson(\''+mod.id+'\',\''+l.id+'\')"><span class="check">'+(state.completed[l.id]?'&#10003;':'')+'</span><span>'+l.title+'</span></div>').join('')+'</div></div>';}).join('');
-}
-function renderHome() {
-  const pct=getCompletionPercent();
-  document.getElementById('globalProgress').style.width=pct+'%';
-  document.getElementById('globalProgressText').textContent=pct+'% complete';
-  if(state.lastLesson){document.getElementById('continueBtn').style.display='inline-flex';document.getElementById('startBtn').textContent='Start from Beginning';}
-  document.getElementById('roadmapGrid').innerHTML=MODULES.map(mod=>{const{done,total}=getModuleCompletion(mod);const p=Math.round((done/total)*100);return '<div class="roadmap-card" onclick="openFirstLesson(\''+mod.id+'\')"><div class="mod-num">Module '+(MODULES.indexOf(mod)+1)+'</div><h4>'+mod.icon+' '+mod.title+'</h4><p>'+mod.desc+'</p><div class="card-progress"><div class="card-progress-fill" style="width:'+p+'%"></div></div></div>';}).join('');
-}
-function showView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(n+'View').classList.add('active');}
-function renderLesson(modId,lessonId){
-  const mod=MODULES.find(m=>m.id===modId),lesson=mod.lessons.find(l=>l.id===lessonId);
-  const li=mod.lessons.indexOf(lesson),mi=MODULES.indexOf(mod);
-  document.getElementById('lessonBreadcrumb').textContent='Module '+(mi+1)+': '+mod.title+' → Lesson '+(li+1);
-  const body=document.getElementById('lessonBody');
-  body.innerHTML=lesson.content();
-  const ic=!!state.completed[lessonId];
-  body.innerHTML+='<div class="complete-section"><button class="btn btn-complete '+(ic?'done':'')+'" onclick="completeLesson(\''+lessonId+'\')" '+(ic?'disabled':'')+'>'+( ic?'&#10003; Completed':'Mark as Complete')+'</button></div>';
-  const{prev,next}=getAdjacentLessons(modId,lessonId);
-  const pb=document.getElementById('prevLessonBtn'),nb=document.getElementById('nextLessonBtn');
-  if(prev){pb.style.display='inline-flex';pb.onclick=()=>openLesson(prev.modId,prev.lessonId);pb.textContent='← '+prev.title;}else pb.style.display='none';
-  if(next){nb.style.display='inline-flex';nb.onclick=()=>openLesson(next.modId,next.lessonId);nb.textContent=next.title+' →';}else nb.style.display='none';
-  state.lastLesson=lessonId;saveState(state);renderSidebar();showView('lesson');window.scrollTo(0,0);
-}
-function getAdjacentLessons(modId,lessonId){const f=[];MODULES.forEach(m=>m.lessons.forEach(l=>f.push({modId:m.id,lessonId:l.id,title:l.title})));const i=f.findIndex(x=>x.lessonId===lessonId);return{prev:i>0?f[i-1]:null,next:i<f.length-1?f[i+1]:null};}
-
-// ============================================================
-// EVENTS
-// ============================================================
-function toggleModule(h){h.classList.toggle('expanded');h.nextElementSibling.classList.toggle('open');}
-function openLesson(m,l){renderLesson(m,l);document.getElementById('sidebar').classList.remove('open');}
-function openFirstLesson(m){const mod=MODULES.find(x=>x.id===m);if(mod&&mod.lessons.length)openLesson(m,mod.lessons[0].id);}
-function completeLesson(lid){state.completed[lid]=true;saveState(state);renderSidebar();renderHome();const b=document.querySelector('.btn-complete');if(b){b.classList.add('done');b.disabled=true;b.innerHTML='&#10003; Completed';}const p=getCompletionPercent();document.getElementById('globalProgress').style.width=p+'%';document.getElementById('globalProgressText').textContent=p+'% complete';}
-window.selectAnswer=function(qid,qi,oi,correct){document.querySelectorAll('[data-q="'+qid+'"][data-qi="'+qi+'"]').forEach((li,j)=>{li.classList.add('disabled');if(j===correct)li.classList.add('correct');if(j===oi&&j!==correct)li.classList.add('wrong');});const e=document.getElementById(qid+'_e'+qi);if(e)e.classList.add('visible');};
-window.toggleBlock=function(id){const el=document.getElementById(id);el.classList.toggle('open');el.previousElementSibling.classList.toggle('open');};
-document.getElementById('startBtn').addEventListener('click',()=>openFirstLesson('m1'));
-document.getElementById('continueBtn').addEventListener('click',()=>{if(state.lastLesson){const m=MODULES.find(x=>x.lessons.some(l=>l.id===state.lastLesson));if(m)openLesson(m.id,state.lastLesson);}});
-document.getElementById('backBtn').addEventListener('click',()=>{showView('home');renderHome();});
-document.getElementById('sidebarToggle').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
-renderSidebar();renderHome();
+
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://www.odoo.com/documentation/19.0/developer/reference.html"><span class="lk">Odoo — Developer reference</span><span class="note">Go to <em>User interface → View architectures</em>.</span></a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/XPath"><span class="lk">MDN — XPath</span><span class="note">The query language inside every view inheritance.</span></a>
+    </div>
+
+    <h3>What you actually need to understand</h3>
+
+    <h4>A view is XML describing a screen</h4>
+    <p>The types you will meet are <code>list</code> (called <code>tree</code> before the rename you already know about), <code>form</code>, <code>kanban</code>, <code>search</code>, <code>pivot</code> and <code>graph</code>.</p>
+
+    <h4>You patch views, you never copy them</h4>
+    <pre><code>&lt;record id="view_order_form_margin" model="ir.ui.view"&gt;
+    &lt;field name="name"&gt;sale.order.form.margin&lt;/field&gt;
+    &lt;field name="model"&gt;sale.order&lt;/field&gt;
+    &lt;field name="inherit_id" ref="sale.view_order_form"/&gt;
+    &lt;field name="arch" type="xml"&gt;
+        &lt;xpath expr="//field[@name='amount_untaxed']" position="after"&gt;
+            &lt;field name="margin_pct" widget="percentage"/&gt;
+        &lt;/xpath&gt;
+    &lt;/field&gt;
+&lt;/record&gt;</code></pre>
+    <p><code>position</code> can be <code>after</code>, <code>before</code>, <code>inside</code>, <code>replace</code> or <code>attributes</code>. <strong><code>replace</code> is the dangerous one</strong> — it throws away whatever core put there, so it breaks as soon as core changes. Which is exactly what an upgrade is.</p>
+
+    <h4>Fragile anchors vs stable anchors</h4>
+    <p>Anchoring on a field name (<code>//field[@name='amount_untaxed']</code>) is stable, because field names rarely move. Anchoring on position (<code>//page[3]</code>) or on layout structure is fragile, because any reshuffle in core silently changes what your xpath points at.</p>
+
+    <h4>The error you will see a thousand times</h4>
+    <pre><code>Element '&lt;xpath expr="//page[3]"&gt;' cannot be located in parent view</code></pre>
+    <p>Translation: the core view changed and this patch no longer matches. It is the most common single error in any Odoo upgrade, and now you know what it means.</p>
+
+    <h4>External IDs</h4>
+    <p><code>sale.view_order_form</code> is an external ID — <code>module.record</code>. It is the stable name used to point at a record from elsewhere. These live in the <code>ir_model_data</code> table, and they are what breaks when a module is renamed or removed. <code>noupdate="1"</code> on data means “do not overwrite this on module update”, which explains why some data stubbornly refuses to change.</p>
+
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="xm1"><span class="body"><strong>Add a field to a core form view</strong> from your own module using xpath. Then deliberately write an xpath that cannot match, and read the error properly.</span></label></li>
+      <li><label><input type="checkbox" data-id="xm2"><span class="body"><strong>Convert a Studio change into real code.</strong> Take one customisation you made in Studio and rewrite it as a proper XML view inheritance in a module. Uninstall the Studio version and confirm the module does the same thing. This is the single most useful task on this page.</span></label></li>
+      <li><label><input type="checkbox" data-id="xm3"><span class="body"><strong>Prove which anchor survives.</strong> Write the same inheritance twice — once with <code>position="after"</code> on a field name, once with <code>position="replace"</code> on a parent block. Then change the parent view slightly to simulate an upgrade, and see which one still works.</span></label></li>
+      <li><label><input type="checkbox" data-id="xm4"><span class="body"><strong>Find a core view that uses <code>groups=</code></strong> to hide a field, and explain why two colleagues at the same client can see different screens.</span></label></li>
+      <li><label><input type="checkbox" data-id="xm5"><span class="body"><strong>Round-trip a data record.</strong> Export a record as an XML <code>&lt;record&gt;</code>, change it, load it back, and then explain in writing what <code>noupdate="1"</code> would have changed about the outcome.</span></label></li>
+    </ul>
+  </section>
+
+  <!-- ============ SQL ============ -->
+  <section class="track" id="sql">
+    <div class="track-head">
+      <p class="eyebrow">Track D</p>
+      <h2>SQL</h2>
+      <p class="why">Odoo hides the database, and the UI cannot answer the questions upgrade work depends on: what is orphaned, what is inconsistent, and what exactly did Studio create. SQL is how you see the truth instead of the interface.</p>
+    </div>
+
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://pgexercises.com"><span class="lk">PG Exercises</span><span class="note">Free, real PostgreSQL practice. The best resource here.</span></a>
+      <a href="https://sqlbolt.com"><span class="lk">SQLBolt</span><span class="note">Interactive basics in an evening.</span></a>
+      <a href="https://www.postgresql.org/docs/current/tutorial.html"><span class="lk">PostgreSQL — tutorial</span><span class="note">Official, and short.</span></a>
+      <a href="https://dbeaver.io"><span class="lk">DBeaver</span><span class="note">Free client. Point it at your Railway database.</span></a>
+    </div>
+
+    <h3>What you actually need to understand</h3>
+
+    <h4>How models map to tables</h4>
+    <p>Dots become underscores: the model <code>account.move</code> is the table <code>account_move</code>. A many2one field is a plain integer column (<code>partner_id</code>). A many2many gets its own join table. A one2many has <strong>no column at all</strong> — it is just the reverse view of a many2one somewhere else.</p>
+
+    <h4>The metadata tables are the whole game</h4>
+    <ul>
+      <li><code>ir_model</code> — every model in the database</li>
+      <li><code>ir_model_fields</code> — every field, including custom ones; <code>state = 'manual'</code> marks a field that Studio or a user created</li>
+      <li><code>ir_ui_view</code> — every view, with its XML in <code>arch_db</code></li>
+      <li><code>ir_model_data</code> — the external IDs, linking XML names to real rows</li>
+      <li><code>ir_module_module</code> — installed modules and their versions</li>
+      <li><code>base_automation</code>, <code>ir_act_server</code> — automation rules and server actions, which is where Studio writes its logic</li>
+    </ul>
+
+    <h4>The first query an upgrade consultant runs</h4>
+    <pre><code>-- Every custom / Studio-created field in this database
+SELECT  m.model,
+        f.name     AS field_name,
+        f.ttype    AS field_type,
+        f.relation,
+        f.store
+FROM    ir_model_fields f
+JOIN    ir_model m ON m.id = f.model_id
+WHERE   f.state = 'manual'
+ORDER BY m.model, f.name;</code></pre>
+    <p class="cap">this is the audit. memorise it.</p>
+
+    <pre><code>-- What is installed, and at which version
+SELECT  name, latest_version, state
+FROM    ir_module_module
+WHERE   state = 'installed'
+ORDER BY name;</code></pre>
+
+    <h4>Read-only discipline</h4>
+    <p>Never <code>UPDATE</code> or <code>DELETE</code> on a client database. The ORM does bookkeeping that raw SQL bypasses entirely — computed fields, constraints, tracking, logging. <strong>Read with SQL, write with the ORM.</strong> Breaking this rule is how consultants lose clients.</p>
+
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="sq1"><span class="body"><strong>Get connected.</strong> Point DBeaver (or <code>psql</code>) at your Railway Postgres. Run <code>\dt</code>, skim the table list, and find the tables behind <code>sale.order</code> and <code>res.partner</code>.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq2"><span class="body"><strong>Watch Studio write to the database.</strong> Run the manual-fields query above, then add a field in Studio, then run it again. Write down exactly what appeared.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq3"><span class="body"><strong>Read a Studio view from the database.</strong> Find the rows Studio added to <code>ir_ui_view</code>, read the <code>arch_db</code> of one, and compare it with the XML you would have written by hand.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq4"><span class="body"><strong>Write five queries of your own</strong> that answer real questions: invoices with no lines; partners with no email; done stock moves with zero quantity; records created in the last seven days; the five biggest tables by row count.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq5"><span class="body"><strong>Join three tables.</strong> Go <code>sale_order</code> → <code>sale_order_line</code> → <code>product_product</code> and produce the top ten products by quantity sold.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq6"><span class="body"><strong>Find an orphan.</strong> Locate a row whose many2one points at an id that no longer exists. Then explain why the ORM would normally prevent this, and how it happens anyway.</span></label></li>
+      <li><label><input type="checkbox" data-id="sq7"><span class="body"><strong>Cross the tracks.</strong> Use <code>ir_model_data</code> to find the external ID of a record, then find that same external ID in the Odoo source on GitHub.</span></label></li>
+    </ul>
+  </section>
+
+  <!-- ============ STUDIO ============ -->
+  <section class="track" id="studio">
+    <div class="track-head">
+      <p class="eyebrow">Track E · three weeks, then stop</p>
+      <h2>Studio</h2>
+      <p class="why">Not a speciality — table stakes. You learn it so you can recognise what clients have built and judge what must become real code. Studio changes are the main reason upgrades break, so this is reconnaissance for the next track, not a destination.</p>
+    </div>
+
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://www.odoo.com/documentation/19.0/applications/studio.html"><span class="lk">Odoo — Studio documentation</span><span class="note">One afternoon. It is not a deep subject.</span></a>
+    </div>
+
+    <h3>What you actually need to understand</h3>
+    <p>Studio writes to the <em>same database tables</em> a developer's module writes to — but as “manual” records, with no module to own them and no file in git. That is the entire problem in one sentence: <strong>a module can be versioned, reviewed, diffed and migrated. A Studio change cannot.</strong></p>
+    <p>Studio can add fields, edit views, create automation rules and server actions, build reports and add approval rules. It stops at anything needing real logic — loops, external calls, complex conditions, performance work, or overriding a core method.</p>
+    <p>The judgement you are building is a three-way call on every customisation you meet: <strong>(a)</strong> this is fine as it is, <strong>(b)</strong> this should be a proper module, or <strong>(c)</strong> this should not exist, because the underlying process is wrong. Being able to make that call out loud, with reasons, is what separates you from someone who can click.</p>
+
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="st1"><span class="body"><strong>Build one of each, then find it in SQL.</strong> In a scratch database create a new field, a view change, an automation rule, a server action, a report tweak and an approval rule. After each one, locate it in the database using Track D. Keep a two-column note: <em>what I clicked</em> → <em>what it wrote</em>.</span></label></li>
+      <li><label><input type="checkbox" data-id="st2"><span class="body"><strong>Rebuild one as a module</strong> and list everything the module gives you that Studio does not: a file, a version, a diff, a review, a clean uninstall.</span></label></li>
+      <li><label><input type="checkbox" data-id="st3"><span class="body"><strong>Find three reasonable client requests Studio cannot do.</strong> One sentence each on why. This becomes your vocabulary for saying “this needs development” convincingly.</span></label></li>
+      <li><label><input type="checkbox" data-id="st4"><span class="body"><strong>Write a one-page note: “When not to use Studio”</strong>, aimed at a colleague. This is the deliverable — it is what makes you the person with judgement rather than the person with clicks.</span></label></li>
+    </ul>
+  </section>
+
+  <!-- ============ UPGRADE ============ -->
+  <section class="track" id="upgrade">
+    <div class="track-head">
+      <p class="eyebrow">Track F · the destination</p>
+      <h2>Upgrade</h2>
+      <p class="why">Demanded internally, nobody has it, completely portable, and it never expires — Odoo ships a version every year and the install base keeps growing. It is also the layer that uses all five tracks above at the same time.</p>
+    </div>
+
+    <h3>Links</h3>
+    <div class="links">
+      <a href="https://www.odoo.com/documentation/19.0/administration/upgrade.html"><span class="lk">Odoo — Upgrade documentation</span><span class="note">What the official process does and does not cover.</span></a>
+      <a href="https://upgrade.odoo.com"><span class="lk">upgrade.odoo.com</span><span class="note">The standard database upgrade service. Know its limits.</span></a>
+      <a href="https://github.com/OCA/openupgradelib"><span class="lk">OCA — openupgradelib</span><span class="note">The community's migration helper library.</span></a>
+      <a href="https://www.odoo.com/odoo-release-notes"><span class="lk">Odoo release notes</span><span class="note">Your starting point for “what changed” research.</span></a>
+    </div>
+
+    <h3>What you actually need to understand</h3>
+
+    <h4>An upgrade has two halves, and only one is your job</h4>
+    <p>The <strong>standard</strong> half — core schema and core data — is largely automated by Odoo's own tooling. The <strong>custom</strong> half is your modules, the Studio changes, third-party apps and dirty data. That second half is the job, it is different in every database, and that is precisely why it resists automation.</p>
+
+    <h4>What breaks, in order of how often you will see it</h4>
+    <ol class="breaks">
+      <li>xpaths that no longer match, because the core view moved</li>
+      <li>removed or renamed fields and methods that custom code still calls</li>
+      <li>Studio fields and automations with no module to own them</li>
+      <li>third-party or OCA modules with no release for the target version</li>
+      <li>existing data that violates a constraint which did not exist before</li>
+      <li>performance collapse — a query that was fine on 100k rows is not fine on 5M</li>
+    </ol>
+
+    <h4>What clients actually pay for</h4>
+    <p>Not the button press. They pay for certainty, and certainty is a set of documents: a <strong>pre-upgrade audit</strong>, a <strong>test migration</strong>, a <strong>regression test list</strong>, a <strong>cutover plan</strong> and a <strong>rollback plan</strong>. Produce those and you are selling risk transfer, which is why this work bills at the rate it does.</p>
+
+    <h3>Real tasks</h3>
+    <ul class="tasks">
+      <li><label><input type="checkbox" data-id="up1"><span class="body"><strong>Build the patient.</strong> Stand up a <code>17.0</code> database on Railway with <code>starx_gps</code> installed and realistic data in it. Take a backup you can restore from, and verify the restore works.</span></label></li>
+      <li><label><input type="checkbox" data-id="up2"><span class="body"><strong>Write the audit before you touch anything.</strong> Using Track D: installed modules and versions, every manual field, every Studio automation, every custom view, every third-party module. This is a document you could hand a paying client.</span></label></li>
+      <li><label><input type="checkbox" data-id="up3"><span class="body"><strong>Migrate 17.0 → 18.0 → 19.0 by hand</strong> and write down <em>every single error</em>, in order, with its fix. This log is your expertise. You will still be using it in 2029.</span></label></li>
+      <li><label><input type="checkbox" data-id="up4"><span class="body"><strong>Plant three landmines and watch them go off.</strong> Before migrating a fresh copy: an xpath anchored on something that moves, a call to a method removed in 18.0, and a Studio automation referencing a field you then delete. Migrate, and record the exact error signature of each.</span></label></li>
+      <li><label><input type="checkbox" data-id="up5"><span class="body"><strong>Write the cutover checklist.</strong> One page: the week before, the night of, the morning after. Include the rollback step and the point of no return.</span></label></li>
+      <li><label><input type="checkbox" data-id="up6"><span class="body"><strong>Write a “what changed between 17.0 and 19.0” brief</strong> for one module you know well, using <code>git diff</code> and the release notes. Two pages, plain language, no jargon. This is a billable deliverable in its own right.</span></label></li>
+      <li><label><input type="checkbox" data-id="up7"><span class="body"><strong>Read how other people do it.</strong> Find and read three real migration issues or pull requests on OCA repositories, and note how they describe the problem and justify the fix.</span></label></li>
+    </ul>
+  </section>
+
+  <!-- ============ WEEKS ============ -->
+  <section class="track" id="weeks">
+    <div class="track-head">
+      <p class="eyebrow">Schedule</p>
+      <h2>The sixteen weeks</h2>
+      <p class="why">Weeks are numbered because this genuinely is a sequence — GitHub unblocks everything, and the migration capstone needs all five earlier tracks in place. Hours assume the marathon is in the first fortnight, so that fortnight is deliberately light.</p>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Weeks</th><th>Focus</th><th>Hours</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="wk">1–2</td><td><span class="tag">Track A</span>GitHub only. Nothing else — you are racing Florence. Clone Odoo, do the five-PR task.</td><td class="hrs">4–5</td></tr>
+          <tr><td class="wk">3–4</td><td><span class="tag">Track A</span>Finish the GitHub tasks. Start <em>Server framework 101</em>.</td><td class="hrs">6</td></tr>
+          <tr><td class="wk">5–6</td><td><span class="tag">Track B</span>Python. The tutorial end to end, then the computed-field breakage task.</td><td class="hrs">8–10</td></tr>
+          <tr><td class="wk">7</td><td><span class="tag">Track C</span>XML. Views, xpath, and which anchors survive an upgrade.</td><td class="hrs">8–10</td></tr>
+          <tr><td class="wk">8</td><td><span class="tag">Track E</span>Studio. All four tasks, then stop and do not come back.</td><td class="hrs">8–10</td></tr>
+          <tr><td class="wk">9–10</td><td><span class="tag">Track D</span>SQL. The metadata tables and the audit queries.</td><td class="hrs">8–10</td></tr>
+          <tr><td class="wk">11</td><td><span class="tag">Track B</span>Python again, deeper: overrides, <code>super()</code>, traceback dissection.</td><td class="hrs">8–10</td></tr>
+          <tr><td class="wk">12–13</td><td><span class="tag">Track F</span>The capstone. Build the 17.0 database, write the audit, migrate to 19.0.</td><td class="hrs">10</td></tr>
+          <tr><td class="wk">14</td><td><span class="tag">Track F</span>Plant the landmines. Record every error signature.</td><td class="hrs">10</td></tr>
+          <tr><td class="wk">15</td><td><span class="tag">Write-up</span>The audit template and the cutover checklist.</td><td class="hrs">8</td></tr>
+          <tr><td class="wk">16</td><td><span class="tag">Write-up</span>The 17→19 brief. Then publish all of it internally.</td><td class="hrs">8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pull">
+      <p>Four months of study with no tickets routed to you produces a person who has read about migrations. Four months of study <em>with</em> the escalations produces the person the office sends them to. The difference is one conversation in week one.</p>
+      <p class="who">the only part that is not optional</p>
+    </div>
+  </section>
+
+  <!-- ============ END ============ -->
+  <section class="track" id="end">
+    <div class="track-head">
+      <p class="eyebrow">February 2027</p>
+      <h2>What you will actually have</h2>
+      <p class="why">Not “knowledge” — artefacts. Things with filenames, that you can show a manager, attach to an application, or hand to a client. Knowledge is unprovable; documents are not.</p>
+    </div>
+
+    <ol class="deliv">
+      <li><strong>A PR-reading note on five real tickets</strong><span>Proof you can answer the version question yourself.</span></li>
+      <li><strong>Your own addon, migrated 17 → 18 → 19, with the full error log</strong><span>The most valuable document on this list.</span></li>
+      <li><strong>A pre-upgrade audit template</strong><span>SQL queries plus a checklist. Reusable on every client, forever.</span></li>
+      <li><strong>A cutover checklist with a rollback step</strong><span>What clients are actually buying.</span></li>
+      <li><strong>A “what changed between 17.0 and 19.0” brief for one module</strong><span>A billable deliverable you have already written once.</span></li>
+      <li><strong>A “when not to use Studio” note for colleagues</strong><span>Judgement, in writing, with your name on it.</span></li>
+      <li><strong>A personal error → cause → fix catalogue</strong><span>Grows forever. This is the thing that compounds.</span></li>
+    </ol>
+
+    <h3>The sentence this all buys you</h3>
+    <div class="pull">
+      <p>“Odoo technical consultant — migrations and customisation. Python, XML, SQL, git. Reads and traces core changes across versions.”</p>
+      <p class="who">no country · no language · no expiry date</p>
+    </div>
+
+    <p class="prose">Every item in that sentence is portable. A migration in Lausanne is the same job as a migration in Valencia, and nothing on this page depends on a tax regime, a localisation, or a language. That was the whole point of choosing this track.</p>
+  </section>
+
+  <footer>
+    <p>Progress is saved in this browser only. Nov 2026 – Feb 2027 · <code>bogstar21/-phytonPract</code></p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'upgrade-track-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.tasks input[type=checkbox]'));
+  var doneEl = document.getElementById('done');
+  var totalEl = document.getElementById('total');
+  totalEl.textContent = boxes.length;
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(KEY)) || {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function save(state) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) { /* private mode, blocked storage — page still works */ }
+  }
+  function count() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    doneEl.textContent = n;
+  }
+
+  var state = load();
+  boxes.forEach(function (box) {
+    var id = box.getAttribute('data-id');
+    if (state[id]) { box.checked = true; }
+    box.addEventListener('change', function () {
+      var s = load();
+      if (box.checked) { s[id] = 1; } else { delete s[id]; }
+      save(s);
+      count();
+    });
+  });
+  count();
+})();
 </script>
 </body>
 </html>
